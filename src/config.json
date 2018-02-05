@@ -1,0 +1,46 @@
+{
+  "name": "MySQL-CLI",
+  "type": "executer",
+  "imgUrl": "MySQL.png",
+  "execProgram": "node",
+  "main": "app.js",
+  "version": "1.0.0",
+  "description": "Run sql commands and scripts on MySQL via MySQL cli.",
+  "methods": [
+    {
+      "name": "executeQuery",
+      "viewName": "Execute query",
+      "params": [
+        {
+          "name": "QUERY",
+          "viewName": "query string",
+          "type": "string"
+        },
+        {
+          "name": "CONNECTION_STRING",
+          "viewName": "connection string",
+          "type": "string"
+        }
+      ],
+      "actionString": "CONNECTION_STRING -e 'QUERY'"
+    },
+    {
+      "name": "executeSQLFile",
+      "viewName": "Execute sql file",
+      "params": [
+        {
+          "name": "PATH",
+          "viewName": "file path",
+          "type": "string"
+        },
+        {
+          "name": "CONNECTION_STRING",
+          "viewName": "connection string",
+          "type": "string"
+        }
+
+      ],
+      "actionString": "CONNECTION_STRING -e < PATH"
+    }
+  ]
+}
