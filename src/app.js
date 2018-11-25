@@ -31,29 +31,7 @@ function executeSQLFile(action) {
     });
 }
 
-const functions = {
+module.exports = {
     executeQuery: executeQuery,
     executeSQLFile: executeSQLFile
 };
-
-function main(argv) {
-    if (argv.length < 3) {
-        console.log('{err: "not enough parameters"}');
-        // Invalid Argument
-        // Either an unknown option was specified, or an option requiring a value was provided without a value.
-        process.exit(9);
-    }
-    let action = JSON.parse(argv[2]);
-    functions[action.method.name](action)
-        .then(res => {
-            console.log(res);
-            process.exit(0); // Success
-        }).catch(err => {
-        console.log("an error occured", err);
-        // Uncaught Fatal Exception
-        // There was an uncaught exception, and it was not handled by a domain or an 'uncaughtException' event handler.
-        process.exit(1); // Failure
-    });
-}
-
-main(process.argv);
