@@ -6,7 +6,7 @@ function executeQuery(action) {
 
         child_process.exec(execString, (error, stdout, stderr) => {
             if (error) {
-                reject(`exec error: ${error}`);
+                return reject(`exec error: ${error}`);
             }
             if (stderr) {
                 console.log(`stderr: ${stderr}`);
@@ -21,7 +21,7 @@ function executeSQLFile(action) {
         let execString = `${action.params.CONNECTION_STRING} < ${action.params.PATH}`;
         child_process.exec(execString, (error, stdout, stderr) => {
             if (error) {
-                reject(`exec error: ${error}`);
+                return reject(`exec error: ${error}`);
             }
             if (stderr) {
                 console.log(`stderr: ${stderr}`);
