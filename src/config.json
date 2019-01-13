@@ -41,6 +41,78 @@
 
       ],
       "actionString": "CONNECTION_STRING -e < PATH"
+    },
+    {
+      "name":"dumpDataBase",
+      "viewName":"Dump a database",
+      "params":[
+        {
+          "name": "USERNAME",
+          "viewName": "username",
+          "type": "string"
+        },
+        {
+          "name": "PASSWORD",
+          "viewName": "password",
+          "type": "string"
+        },
+        {
+          "name": "HOST",
+          "viewName": "host",
+          "type": "string"
+        },
+        {
+          "name": "PORT",
+          "viewName": "port",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME",
+          "viewName": "Database name",
+          "type": "string"
+        },
+        {
+          "name": "PATH",
+          "viewName": "file path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name":"copyDataBase",
+      "viewName":"Copy a database",
+      "params":[
+        {
+          "name": "USERNAME",
+          "viewName": "username",
+          "type": "string"
+        },
+        {
+          "name": "PASSWORD",
+          "viewName": "password",
+          "type": "string"
+        },
+        {
+          "name": "HOST",
+          "viewName": "host",
+          "type": "string"
+        },
+        {
+          "name": "PORT",
+          "viewName": "port",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME",
+          "viewName": "Database name",
+          "type": "string"
+        },
+        {
+          "name": "DATA",
+          "viewName": "With data",
+          "type": "boolean"
+        }
+      ]
     }
   ]
 }
