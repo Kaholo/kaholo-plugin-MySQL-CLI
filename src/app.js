@@ -2,11 +2,11 @@ const child_process = require("child_process")
 
 function executeQuery(action) {
     return new Promise((resolve, reject) => {
-        let execString = `${action.params.CONNECTION_STRING} -e '${action.params.QUERY}'`;
+        let execString = `${action.params.CONNECTION_STRING} -e "${action.params.QUERY}"`;
 
         child_process.exec(execString, (error, stdout, stderr) => {
             if (error) {
-                reject(`exec error: ${error}`);
+                return reject(`exec error: ${error}`);
             }
             if (stderr) {
                 console.log(`stderr: ${stderr}`);
@@ -21,7 +21,7 @@ function executeSQLFile(action) {
         let execString = `${action.params.CONNECTION_STRING} < ${action.params.PATH}`;
         child_process.exec(execString, (error, stdout, stderr) => {
             if (error) {
-                reject(`exec error: ${error}`);
+               return reject(`exec error: ${error}`);
             }
             if (stderr) {
                 console.log(`stderr: ${stderr}`);
