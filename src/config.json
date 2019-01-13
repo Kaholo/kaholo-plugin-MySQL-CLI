@@ -83,13 +83,13 @@
       "viewName":"Copy a database",
       "params":[
         {
-          "name": "USERNAME",
-          "viewName": "username",
+          "name": "SOURCE_USERNAME",
+          "viewName": "source username",
           "type": "string"
         },
         {
-          "name": "PASSWORD",
-          "viewName": "password",
+          "name": "SOURCE_PASSWORD",
+          "viewName": "source password",
           "type": "string"
         },
         {
@@ -100,6 +100,16 @@
         {
           "name": "SOURCE_PORT",
           "viewName": "source port",
+          "type": "string"
+        },
+        {
+          "name": "DEST_USERNAME",
+          "viewName": "target username",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PASSWORD",
+          "viewName": "target password",
           "type": "string"
         },
         {
