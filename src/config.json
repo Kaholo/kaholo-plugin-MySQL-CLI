@@ -93,18 +93,33 @@
           "type": "string"
         },
         {
-          "name": "HOST",
-          "viewName": "host",
+          "name": "SOURCE_HOST",
+          "viewName": "source host",
           "type": "string"
         },
         {
-          "name": "PORT",
-          "viewName": "port",
+          "name": "SOURCE_PORT",
+          "viewName": "source port",
+          "type": "string"
+        },
+        {
+          "name": "DEST_HOST",
+          "viewName": "destination host",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PORT",
+          "viewName": "destination port",
           "type": "string"
         },
         {
           "name": "DB_NAME",
           "viewName": "Database name",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME_COPY",
+          "viewName": "New database name",
           "type": "string"
         },
         {
