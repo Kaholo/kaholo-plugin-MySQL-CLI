@@ -41,6 +41,103 @@
 
       ],
       "actionString": "CONNECTION_STRING -e < PATH"
+    },
+    {
+      "name":"dumpDataBase",
+      "viewName":"Dump a database",
+      "params":[
+        {
+          "name": "USERNAME",
+          "viewName": "username",
+          "type": "string"
+        },
+        {
+          "name": "PASSWORD",
+          "viewName": "password",
+          "type": "string"
+        },
+        {
+          "name": "HOST",
+          "viewName": "host",
+          "type": "string"
+        },
+        {
+          "name": "PORT",
+          "viewName": "port",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME",
+          "viewName": "Database name",
+          "type": "string"
+        },
+        {
+          "name": "PATH",
+          "viewName": "file path",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name":"copyDataBase",
+      "viewName":"Copy a database",
+      "params":[
+        {
+          "name": "SOURCE_USERNAME",
+          "viewName": "source username",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_PASSWORD",
+          "viewName": "source password",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_HOST",
+          "viewName": "source host",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_PORT",
+          "viewName": "source port",
+          "type": "string"
+        },
+        {
+          "name": "DEST_USERNAME",
+          "viewName": "target username",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PASSWORD",
+          "viewName": "target password",
+          "type": "string"
+        },
+        {
+          "name": "DEST_HOST",
+          "viewName": "destination host",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PORT",
+          "viewName": "destination port",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME",
+          "viewName": "Database name",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME_COPY",
+          "viewName": "New database name",
+          "type": "string"
+        },
+        {
+          "name": "DATA",
+          "viewName": "With data",
+          "type": "boolean"
+        }
+      ]
     }
   ]
 }
