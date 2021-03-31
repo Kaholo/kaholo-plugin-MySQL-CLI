@@ -4,137 +4,146 @@
   "imgUrl": "MySQL.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "1.2.0",
-  "description": "Run sql commands and scripts on MySQL via MySQL cli.",
+  "version": "1.3.0",
+  "description": "execute MySQL queries and scripts via cli.",
+  "settings": [
+    {
+      "name": "connectionString",
+      "viewName": "Connection String",
+      "type": "string"
+    }
+  ],
   "methods": [
     {
       "name": "executeQuery",
-      "viewName": "Execute query",
+      "viewName": "Execute Query",
       "params": [
         {
           "name": "QUERY",
-          "viewName": "query string",
+          "viewName": "Query String",
           "type": "string"
         },
         {
           "name": "CONNECTION_STRING",
-          "viewName": "connection string",
-          "type": "string"
-        }
-      ],
-      "actionString": "CONNECTION_STRING -e 'QUERY'"
-    },
-    {
-      "name": "executeSQLFile",
-      "viewName": "Execute sql file",
-      "params": [
-        {
-          "name": "PATH",
-          "viewName": "file path",
-          "type": "string"
-        },
-        {
-          "name": "CONNECTION_STRING",
-          "viewName": "connection string",
-          "type": "string"
-        }
-
-      ],
-      "actionString": "CONNECTION_STRING -e < PATH"
-    },
-    {
-      "name":"dumpDataBase",
-      "viewName":"Dump a database",
-      "params":[
-        {
-          "name": "USERNAME",
-          "viewName": "username",
-          "type": "string"
-        },
-        {
-          "name": "PASSWORD",
-          "viewName": "password",
-          "type": "string"
-        },
-        {
-          "name": "HOST",
-          "viewName": "host",
-          "type": "string"
-        },
-        {
-          "name": "PORT",
-          "viewName": "port",
-          "type": "string"
-        },
-        {
-          "name": "DB_NAME",
-          "viewName": "Database name",
-          "type": "string"
-        },
-        {
-          "name": "PATH",
-          "viewName": "file path",
+          "viewName": "Connection String",
           "type": "string"
         }
       ]
     },
     {
-      "name":"copyDataBase",
-      "viewName":"Copy a database",
+      "name": "executeSQLFile",
+      "viewName": "Execute SQL File",
+      "params": [
+        {
+          "name": "PATH",
+          "viewName": "File Path",
+          "type": "string"
+        },
+        {
+          "name": "CONNECTION_STRING",
+          "viewName": "Connection String",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name":"dumpDataBase",
+      "viewName":"Dump a Database",
       "params":[
         {
-          "name": "SOURCE_USERNAME",
-          "viewName": "source username",
+          "name": "USERNAME",
+          "viewName": "Username",
           "type": "string"
         },
         {
-          "name": "SOURCE_PASSWORD",
-          "viewName": "source password",
+          "name": "PASSWORD",
+          "viewName": "Password",
           "type": "string"
         },
         {
-          "name": "SOURCE_HOST",
-          "viewName": "source host",
+          "name": "HOST",
+          "viewName": "Host",
           "type": "string"
         },
         {
-          "name": "SOURCE_PORT",
-          "viewName": "source port",
-          "type": "string"
-        },
-        {
-          "name": "DEST_USERNAME",
-          "viewName": "target username",
-          "type": "string"
-        },
-        {
-          "name": "DEST_PASSWORD",
-          "viewName": "target password",
-          "type": "string"
-        },
-        {
-          "name": "DEST_HOST",
-          "viewName": "destination host",
-          "type": "string"
-        },
-        {
-          "name": "DEST_PORT",
-          "viewName": "destination port",
+          "name": "PORT",
+          "viewName": "Port",
           "type": "string"
         },
         {
           "name": "DB_NAME",
-          "viewName": "Database name",
+          "viewName": "Database Name",
           "type": "string"
         },
         {
-          "name": "DB_NAME_COPY",
-          "viewName": "New database name",
+          "name": "PATH",
+          "viewName": "File Path",
           "type": "string"
         },
         {
           "name": "DATA",
-          "viewName": "With data",
+          "viewName": "Include Data",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name":"copyDataBase",
+      "viewName":"Copy a Database",
+      "params":[
+        {
+          "name": "SOURCE_USERNAME",
+          "viewName": "Source Username",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_PASSWORD",
+          "viewName": "Source Password",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_HOST",
+          "viewName": "Source Host",
+          "type": "string"
+        },
+        {
+          "name": "SOURCE_PORT",
+          "viewName": "Source Port",
+          "type": "string"
+        },
+        {
+          "name": "DEST_USERNAME",
+          "viewName": "Target Username",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PASSWORD",
+          "viewName": "Target Password",
+          "type": "string"
+        },
+        {
+          "name": "DEST_HOST",
+          "viewName": "Destination Host",
+          "type": "string"
+        },
+        {
+          "name": "DEST_PORT",
+          "viewName": "Destination Port",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME",
+          "viewName": "Source Database Name",
+          "type": "string"
+        },
+        {
+          "name": "DB_NAME_COPY",
+          "viewName": "New Database Name",
+          "type": "string"
+        },
+        {
+          "name": "DATA",
+          "viewName": "Copy With Data",
           "type": "boolean"
         }
       ]
