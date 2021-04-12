@@ -4,11 +4,11 @@
   "imgUrl": "MySQL.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "execute MySQL queries and scripts via cli.",
   "settings": [
     {
-      "name": "connectionString",
+      "name": "conStr",
       "viewName": "Connection String",
       "type": "string"
     }
@@ -19,12 +19,12 @@
       "viewName": "Execute Query",
       "params": [
         {
-          "name": "QUERY",
+          "name": "query",
           "viewName": "Query String",
           "type": "string"
         },
         {
-          "name": "CONNECTION_STRING",
+          "name": "conStr",
           "viewName": "Connection String",
           "type": "string"
         }
@@ -35,12 +35,12 @@
       "viewName": "Execute SQL File",
       "params": [
         {
-          "name": "PATH",
+          "name": "path",
           "viewName": "File Path",
           "type": "string"
         },
         {
-          "name": "CONNECTION_STRING",
+          "name": "conStr",
           "viewName": "Connection String",
           "type": "string"
         }
@@ -51,39 +51,24 @@
       "viewName":"Dump a Database",
       "params":[
         {
-          "name": "USERNAME",
-          "viewName": "Username",
-          "type": "string"
-        },
-        {
-          "name": "PASSWORD",
-          "viewName": "Password",
-          "type": "string"
-        },
-        {
-          "name": "HOST",
-          "viewName": "Host",
-          "type": "string"
-        },
-        {
-          "name": "PORT",
-          "viewName": "Port",
-          "type": "string"
-        },
-        {
-          "name": "DB_NAME",
+          "name": "dbName",
           "viewName": "Database Name",
           "type": "string"
         },
         {
-          "name": "PATH",
+          "name": "path",
           "viewName": "File Path",
           "type": "string"
         },
         {
-          "name": "DATA",
+          "name": "data",
           "viewName": "Include Data",
           "type": "boolean"
+        },
+        {
+          "name": "conStr",
+          "viewName": "Connection String",
+          "type": "string"
         }
       ]
     },
@@ -92,57 +77,27 @@
       "viewName":"Copy a Database",
       "params":[
         {
-          "name": "SOURCE_USERNAME",
-          "viewName": "Source Username",
-          "type": "string"
-        },
-        {
-          "name": "SOURCE_PASSWORD",
-          "viewName": "Source Password",
-          "type": "string"
-        },
-        {
-          "name": "SOURCE_HOST",
-          "viewName": "Source Host",
-          "type": "string"
-        },
-        {
-          "name": "SOURCE_PORT",
-          "viewName": "Source Port",
-          "type": "string"
-        },
-        {
-          "name": "DEST_USERNAME",
-          "viewName": "Target Username",
-          "type": "string"
-        },
-        {
-          "name": "DEST_PASSWORD",
-          "viewName": "Target Password",
-          "type": "string"
-        },
-        {
-          "name": "DEST_HOST",
-          "viewName": "Destination Host",
-          "type": "string"
-        },
-        {
-          "name": "DEST_PORT",
-          "viewName": "Destination Port",
-          "type": "string"
-        },
-        {
-          "name": "DB_NAME",
+          "name": "dbName",
           "viewName": "Source Database Name",
           "type": "string"
         },
         {
-          "name": "DB_NAME_COPY",
+          "name": "dbNameCopy",
           "viewName": "New Database Name",
           "type": "string"
         },
         {
-          "name": "DATA",
+          "name": "conStr",
+          "viewName": "Source Connection String",
+          "type": "string"
+        },
+        {
+          "name": "destConStr",
+          "viewName": "Destination Connection String",
+          "type": "string"
+        },
+        {
+          "name": "data",
           "viewName": "Copy With Data",
           "type": "boolean"
         }
