@@ -1,9 +1,11 @@
 const child_process = require("child_process");
 const {ConnectionString} = require('connection-string');
 
-async function execCmd(command, args, description){
+async function execCmd(command, args, description, path){
+    let opts = {};
+    if (path) opts.cwd = path;
     return new Promise((resolve, reject) => {
-        child_process.execFile(command, args, (error, stdout, stderr) => {
+        child_process.execFile(command, args, opts, (error, stdout, stderr) => {
             if (error) {
                 return reject(`${description} error: ${error}`);
             }
