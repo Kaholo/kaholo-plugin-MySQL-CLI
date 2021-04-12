@@ -3,6 +3,7 @@ Kaholo Plugin for running scripts and queries through MySQL cli.
 
 ## Settings:
 1. Connection String (string) **Optional** - The Default MySQL Server connection string to connect with.
+2. MySql Shell Executables Path (String) **Optional** - The path on the agent where all MySQL Shell execuables are stored. *for example:* C:\tools\mysql\current\bin.
 
 ## Method: Execute Query
 Execute a SQL query on a MySQL server.

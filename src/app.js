@@ -8,7 +8,7 @@ async function executeQuery(action, settings) {
     }
     let args = conStrToArgs(conStr, true);
     args.push("-e", action.params.query);
-    return execCmd("mysql", args, "Run Query");
+    return execCmd("mysql", args, "Run Query", settings.path);
 }
 
 async function executeSQLFile(action, settings) {
@@ -36,7 +36,7 @@ async function dumpDataBase(action, settings){
     if (!action.params.data) args.push("-d");
     args.push(action.params.dbName);
     
-    return await execCmd("mysqldump", args, "Dump Database");
+    return await execCmd("mysqldump", args, "Dump Database", settings.path);
 }
 
 async function copyDataBase(action, settings){
@@ -50,10 +50,10 @@ async function copyDataBase(action, settings){
     const dumpData = await dumpDataBase(action, settings);
     // create new database
     const createArgs = destArgs.concat(["create", action.params.dbNameCopy]);
-    await execCmd("mysqladmin", createArgs, "Create Database For Copy");
+    await execCmd("mysqladmin", createArgs, "Create Database For Copy", settings.path);
     // copy source database 
     const dumpArgs = destArgs.concat([action.params.dbNameCopy, "-e", dumpData]);
-    return execCmd("mysql", dumpArgs, "Copy Source Database From Dump");
+    return execCmd("mysql", dumpArgs, "Copy Source Database From Dump", settings.path);
 }
 
 module.exports = {
