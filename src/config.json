@@ -4,7 +4,7 @@
   "imgUrl": "MySQL.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "execute MySQL queries and scripts via cli.",
   "settings": [
     {
@@ -24,13 +24,13 @@
       "viewName": "Execute Query",
       "params": [
         {
-          "name": "query",
-          "viewName": "Query String",
+          "name": "conStr",
+          "viewName": "Connection String",
           "type": "string"
         },
         {
-          "name": "conStr",
-          "viewName": "Connection String",
+          "name": "query",
+          "viewName": "Query String",
           "type": "string"
         }
       ]
@@ -40,13 +40,13 @@
       "viewName": "Execute SQL File",
       "params": [
         {
-          "name": "path",
-          "viewName": "File Path",
+          "name": "conStr",
+          "viewName": "Connection String",
           "type": "string"
         },
         {
-          "name": "conStr",
-          "viewName": "Connection String",
+          "name": "path",
+          "viewName": "File Path",
           "type": "string"
         }
       ]
@@ -55,6 +55,11 @@
       "name":"dumpDataBase",
       "viewName":"Dump a Database",
       "params":[
+        {
+          "name": "conStr",
+          "viewName": "Connection String",
+          "type": "string"
+        },
         {
           "name": "dbName",
           "viewName": "Database Name",
@@ -69,11 +74,6 @@
           "name": "data",
           "viewName": "Include Data",
           "type": "boolean"
-        },
-        {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
         }
       ]
     },
@@ -82,23 +82,23 @@
       "viewName":"Copy a Database",
       "params":[
         {
-          "name": "dbName",
-          "viewName": "Source Database Name",
-          "type": "string"
-        },
-        {
-          "name": "dbNameCopy",
-          "viewName": "New Database Name",
-          "type": "string"
-        },
-        {
           "name": "conStr",
           "viewName": "Source Connection String",
           "type": "string"
         },
         {
+          "name": "dbName",
+          "viewName": "Source Database Name",
+          "type": "string"
+        },
+        {
           "name": "destConStr",
           "viewName": "Destination Connection String",
+          "type": "string"
+        },
+        {
+          "name": "dbNameCopy",
+          "viewName": "New Database Name",
           "type": "string"
         },
         {
