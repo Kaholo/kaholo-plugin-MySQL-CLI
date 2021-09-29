@@ -7,7 +7,7 @@ async function executeQuery(action, settings) {
         throw "No Query Provided";
     }
     let args = conStrToArgs(conStr, true);
-    args.push("-e", action.params.query);
+    args.push("-e", `"${action.params.query}"`);
     return execCmd("mysql", args, "Run Query", settings.path);
 }
 
