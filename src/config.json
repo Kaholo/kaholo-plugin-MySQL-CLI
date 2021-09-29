@@ -4,7 +4,7 @@
   "imgUrl": "MySQL.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "execute MySQL queries and scripts via cli.",
   "settings": [
     {
