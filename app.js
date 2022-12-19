@@ -13,7 +13,7 @@ async function executeQuery(params, { settings }) {
   } = params;
 
   const args = parseConnectionStringToShellArguments(conStr, true);
-  args.push("-e", `"${query}"`);
+  args.push("-e", query);
   return execCmd("mysql", args, "Run Query", settings.path);
 }
 
@@ -55,12 +55,12 @@ async function dumpDataBase(params, { settings }) {
 async function copyDataBase(params, { settings }) {
   const {
     dbNameCopy: copiedDbName,
-    destConStr: destinationConnectionString,
+    destConStr: destinationDbConnectionString,
     conStr: connectionString,
   } = params;
 
-  const destConStr = destinationConnectionString || connectionString || "";
-  const destinationDbArgs = parseConnectionStringToShellArguments(destConStr, false);
+  const resolvedDestDbConStr = destinationDbConnectionString || connectionString || "";
+  const destinationDbArgs = parseConnectionStringToShellArguments(resolvedDestDbConStr, false);
 
   // dump sorce database
   const dumpData = await dumpDataBase(params, { settings });
@@ -69,6 +69,7 @@ async function copyDataBase(params, { settings }) {
   await execCmd("mysqladmin", createDbArgs, "Create Database For Copy", settings.path);
   // copy source database
   const dumpArgs = destinationDbArgs.concat([copiedDbName, "-e", dumpData]);
+
   return execCmd("mysql", dumpArgs, "Copy Source Database From Dump", settings.path);
 }
 
