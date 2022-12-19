@@ -1,14 +1,19 @@
 {
   "name": "kaholo-plugin-mysqlcli",
-  "version": "2.0.2",
   "description": "MySQL CLI plugin for Kaholo",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
   },
   "author": "Kaholo Team",
   "license": "ISC",
   "dependencies": {
-    "connection-string": "^4.3.2"
+    "connection-string": "4.3.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.30.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
   }
 }
