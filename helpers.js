@@ -1,41 +1,46 @@
 const childProcess = require("child_process");
+const { promisify } = require("util");
 const { ConnectionString } = require("connection-string");
 
+const execFile = promisify(childProcess.execFile);
+
 async function execCmd(command, args, description, path) {
-  const opts = {};
+  const options = {};
   if (path) {
-    opts.cwd = path;
+    options.cwd = path;
   }
-  return new Promise((resolve, reject) => {
-    childProcess.execFile(command, args, opts, (error, stdout, stderr) => {
-      if (error) {
-        return reject(new Error(`${description} error: ${error}`));
-      }
-      if (stderr) {
-        console.info(`${description} stderr: ${stderr}`);
-      }
-      return resolve(stdout);
-    });
-  });
+
+  let stdout;
+  let stderr;
+  try {
+    ({ stdout, stderr } = await execFile(command, args, options));
+  } catch (error) {
+    throw new Error(`${description} error: ${error}`);
+  }
+
+  if (stderr) {
+    console.info(`${description} stderr: ${stderr}`);
+  }
+  return stdout;
 }
 
-function conStrToArgs(conStr, dbNeeded) {
+function parseConnectionStringToShellArguments(connectionString, isDbRequired) {
   const args = [];
-  const conObj = new ConnectionString(conStr);
-  if (Reflect.has(conObj, "user")) {
-    args.push("-u", conObj.user);
+  const connectionStringObject = new ConnectionString(connectionString);
+  if (Reflect.has(connectionStringObject, "user")) {
+    args.push("-u", connectionStringObject.user);
   }
-  if (Reflect.has(conObj, "password")) {
-    args.push(`-p${conObj.password}`);
+  if (Reflect.has(connectionStringObject, "password")) {
+    args.push(`-p${connectionStringObject.password}`);
   }
-  if (Reflect.has(conObj, "hostname")) {
-    args.push("-h", conObj.hostname);
+  if (Reflect.has(connectionStringObject, "hostname")) {
+    args.push("-h", connectionStringObject.hostname);
   }
-  if (Reflect.has(conObj, "port")) {
-    args.push("-P", conObj.port);
+  if (Reflect.has(connectionStringObject, "port")) {
+    args.push("-P", connectionStringObject.port);
   }
-  if (dbNeeded && Reflect.has(conObj, "path")) {
-    args.push("-D", conObj.path.join("/"));
+  if (isDbRequired && Reflect.has(connectionStringObject, "path")) {
+    args.push("-D", connectionStringObject.path.join("/"));
   }
 
   return args;
@@ -43,5 +48,5 @@ function conStrToArgs(conStr, dbNeeded) {
 
 module.exports = {
   execCmd,
-  conStrToArgs,
+  parseConnectionStringToShellArguments,
 };

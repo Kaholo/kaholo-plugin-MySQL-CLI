@@ -31,7 +31,8 @@
         {
           "name": "query",
           "viewName": "Query String",
-          "type": "string"
+          "type": "string",
+          "required": true
         }
       ]
     },
@@ -63,12 +64,14 @@
         {
           "name": "dbName",
           "viewName": "Database Name",
-          "type": "string"
+          "type": "string",
+          "required": true
         },
         {
           "name": "path",
           "viewName": "File Path",
-          "type": "string"
+          "type": "string",
+          "required": true
         },
         {
           "name": "data",
@@ -89,7 +92,8 @@
         {
           "name": "dbName",
           "viewName": "Source Database Name",
-          "type": "string"
+          "type": "string",
+          "required": true
         },
         {
           "name": "destConStr",
@@ -99,7 +103,8 @@
         {
           "name": "dbNameCopy",
           "viewName": "New Database Name",
-          "type": "string"
+          "type": "string",
+          "required": true
         },
         {
           "name": "data",
