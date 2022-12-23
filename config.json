@@ -2,7 +2,7 @@
   "name": "MySQL-CLI",
   "viewName": "MySQL CLI",
   "type": "executer",
-  "imgUrl": "MySQL.png",
+  "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
   "version": "2.0.5",
