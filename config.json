@@ -1,5 +1,6 @@
 {
   "name": "MySQL-CLI",
+  "viewName": "MySQL CLI",
   "type": "executer",
   "imgUrl": "MySQL.png",
   "execProgram": "node",
