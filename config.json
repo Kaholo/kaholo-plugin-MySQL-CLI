@@ -1,10 +1,11 @@
 {
   "name": "MySQL-CLI",
+  "viewName": "MySQL CLI",
   "type": "executer",
-  "imgUrl": "MySQL.png",
+  "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "execute MySQL queries and scripts via cli.",
   "settings": [
     {
