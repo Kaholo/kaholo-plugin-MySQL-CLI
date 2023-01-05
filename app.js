@@ -1,81 +1,114 @@
+const path = require("path");
 const fs = require("fs/promises");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
 
-const {
-  execCmd,
-  parseConnectionStringToShellArguments,
-} = require("./helpers");
+const mysqlService = require("./mysql-service");
+const { assertPath } = require("./helpers");
 
 async function executeQuery(params, { settings }) {
+  const { connectionString, password } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+
+  return mysqlService.executeQuery({
+    query: params.query,
+    connectionDetails,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
+}
+
+async function executeSqlFile(params, { settings }) {
   const {
-    conStr,
+    sqlFilePath = "",
+    connectionString,
+    password,
+  } = params;
+
+  const absoluteSqlFilePath = path.resolve(sqlFilePath);
+  await assertPath(absoluteSqlFilePath);
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+  const query = await fs.readFile(sqlFilePath, { encoding: "utf-8" });
+
+  return mysqlService.executeQuery({
     query,
-  } = params;
-
-  const args = parseConnectionStringToShellArguments(conStr, true);
-  args.push("-e", query);
-  return execCmd("mysql", args, "Run Query", settings.path);
+    connectionDetails,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
-async function executeSQLFile(params, { settings }) {
+async function dumpDatabase(params, { settings }) {
   const {
-    path,
-    conStr,
+    connectionString,
+    password,
+    includeData,
+    databaseName,
+    dumpPath,
   } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
 
-  const query = await fs.readFile(path, { encoding: "utf-8" });
-  return executeQuery({ query, conStr }, { settings });
-}
+  const dumpData = await mysqlService.dumpDatabase({
+    connectionDetails,
+    includeData,
+    databaseName,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 
-async function dumpDataBaseToFile(params, { settings }) {
-  const { path } = params;
-
-  const dumpData = await dumpDataBase(params, { settings });
-  await fs.writeFile(path, dumpData);
+  const absoluteDumpPath = path.resolve(dumpPath);
+  await fs.writeFile(absoluteDumpPath, dumpData);
+  console.info(`File ${absoluteDumpPath} saved!`);
 
   return dumpData;
 }
 
-async function dumpDataBase(params, { settings }) {
+async function copyDatabase(params, { settings }) {
   const {
-    conStr: connectionString,
-    data,
-    dbName,
+    connectionString,
+    password,
+    destinationConnectionString,
+    destinationPassword,
+    newDatabaseName,
+    sourceDatabaseName,
+    includeData,
   } = params;
 
-  const args = parseConnectionStringToShellArguments(connectionString, false);
-  if (!data) {
-    args.push("-d");
-  }
-  args.push(dbName);
+  const sourceConnectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+  const destinationConnectionDetails = mysqlService.createConnectionDetails({
+    connectionString: destinationConnectionString || connectionString,
+    password: destinationPassword || password,
+  });
 
-  return execCmd("mysqldump", args, "Dump Database", settings.path);
-}
-
-async function copyDataBase(params, { settings }) {
-  const {
-    dbNameCopy: copiedDbName,
-    destConStr: destinationDbConnectionString,
-    conStr: connectionString,
-  } = params;
-
-  const resolvedDestDbConStr = destinationDbConnectionString || connectionString || "";
-  const destinationDbArgs = parseConnectionStringToShellArguments(resolvedDestDbConStr, false);
-
-  // dump sorce database
-  const dumpData = await dumpDataBase(params, { settings });
-  // create new database
-  const createDbArgs = destinationDbArgs.concat(["create", copiedDbName]);
-  await execCmd("mysqladmin", createDbArgs, "Create Database For Copy", settings.path);
-  // copy source database
-  const dumpArgs = destinationDbArgs.concat([copiedDbName, "-e", dumpData]);
-
-  return execCmd("mysql", dumpArgs, "Copy Source Database From Dump", settings.path);
+  return mysqlService.copyDatabase({
+    source: {
+      connectionDetails: sourceConnectionDetails,
+      databaseName: sourceDatabaseName,
+    },
+    destination: {
+      connectionDetails: destinationConnectionDetails,
+      databaseName: newDatabaseName,
+    },
+    includeData,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
 module.exports = kaholoPluginLibrary.bootstrap({
   executeQuery,
-  executeSQLFile,
-  dumpDataBase: dumpDataBaseToFile,
-  copyDataBase,
+  executeSqlFile,
+  dumpDatabase,
+  copyDatabase,
 });
