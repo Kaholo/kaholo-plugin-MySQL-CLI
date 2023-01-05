@@ -7,12 +7,18 @@
   "main": "app.js",
   "version": "2.0.6",
   "description": "execute MySQL queries and scripts via cli.",
+  "category": "DATABASE",
+  "auth": {
+    "authId": "connectionStringMysql",
+    "params": [
+      {
+        "name": "conStr",
+        "viewName": "Connection String",
+        "type": "string"
+      }
+    ]
+  },
   "settings": [
-    {
-      "name": "conStr",
-      "viewName": "Connection String",
-      "type": "string"
-    },
     {
       "name": "path",
       "viewName": "MySql Shell Executables Path",
@@ -24,11 +30,6 @@
       "name": "executeQuery",
       "viewName": "Execute Query",
       "params": [
-        {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
         {
           "name": "query",
           "viewName": "Query String",
@@ -42,11 +43,6 @@
       "viewName": "Execute SQL File",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
-        {
           "name": "path",
           "viewName": "File Path",
           "type": "string"
@@ -57,11 +53,6 @@
       "name": "dumpDataBase",
       "viewName": "Dump a Database",
       "params": [
-        {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
         {
           "name": "dbName",
           "viewName": "Database Name",
@@ -86,11 +77,6 @@
       "viewName": "Copy a Database",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Source Connection String",
-          "type": "string"
-        },
-        {
           "name": "dbName",
           "viewName": "Source Database Name",
           "type": "string",
@@ -114,6 +100,5 @@
         }
       ]
     }
-  ],
-  "category": "DATABASE"
+  ]
 }
