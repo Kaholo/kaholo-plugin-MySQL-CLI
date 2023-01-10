@@ -7,16 +7,33 @@
   "main": "app.js",
   "version": "2.0.6",
   "description": "execute MySQL queries and scripts via cli.",
+  "category": "DATABASE",
+  "auth": {
+    "authId": "connectionStringMysqlAccount",
+    "params": [
+      {
+        "name": "connectionString",
+        "viewName": "Connection String",
+        "description": "Connection string used to connect to the database",
+        "type": "string",
+        "learnUrl": "https://dev.mysql.com/doc/refman/8.0/en/connecting-using-uri-or-key-value-pairs.html",
+        "required": true
+      },
+      {
+        "name": "password",
+        "viewName": "Password",
+        "description": "Select password from the Kaholo vault if you don't want to enter it directly into the connection string. If both are provided, a password from Kaholo vault takes precedence",
+        "type": "vault"
+      }
+    ]
+  },
   "settings": [
     {
-      "name": "conStr",
-      "viewName": "Connection String",
-      "type": "string"
-    },
-    {
-      "name": "path",
-      "viewName": "MySql Shell Executables Path",
-      "type": "string"
+      "name": "mysqlExecutablesPath",
+      "viewName": "MySQL Shell Executables Path",
+      "description": "Alternative absolute path to the directory containing MySQL executables",
+      "type": "string",
+      "placeholder": "/usr/local/bin"
     }
   ],
   "methods": [
@@ -25,95 +42,89 @@
       "viewName": "Execute Query",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
-        {
           "name": "query",
-          "viewName": "Query String",
+          "viewName": "Query",
           "type": "string",
+          "placeholder": "SELECT * FROM users;",
           "required": true
         }
       ]
     },
     {
-      "name": "executeSQLFile",
+      "name": "executeSqlFile",
       "viewName": "Execute SQL File",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
-        {
-          "name": "path",
+          "name": "sqlFilePath",
           "viewName": "File Path",
-          "type": "string"
+          "description": "Path to the file containing valid SQL query",
+          "type": "string",
+          "placeholder": "./select.sql",
+          "required": true
         }
       ]
     },
     {
-      "name": "dumpDataBase",
+      "name": "dumpDatabase",
       "viewName": "Dump a Database",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Connection String",
-          "type": "string"
-        },
-        {
-          "name": "dbName",
-          "viewName": "Database Name",
+          "name": "databaseName",
+          "viewName": "Database",
           "type": "string",
+          "description": "Name of the database to dump",
           "required": true
         },
         {
-          "name": "path",
-          "viewName": "File Path",
+          "name": "dumpPath",
+          "viewName": "Dump File Path",
           "type": "string",
+          "description": "Path at which the dump file will be saved, make sure the parent directory exists",
           "required": true
         },
         {
-          "name": "data",
+          "name": "includeData",
           "viewName": "Include Data",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Include in the dump all of the data from all tables",
+          "default": true
         }
       ]
     },
     {
-      "name": "copyDataBase",
+      "name": "copyDatabase",
       "viewName": "Copy a Database",
       "params": [
         {
-          "name": "conStr",
-          "viewName": "Source Connection String",
+          "name": "destinationConnectionString",
+          "viewName": "Destination Connection String",
           "type": "string"
         },
         {
-          "name": "dbName",
+          "name": "destinationPassword",
+          "viewName": "Destination Password",
+          "type": "vault"
+        },
+        {
+          "name": "sourceDatabaseName",
           "viewName": "Source Database Name",
           "type": "string",
           "required": true
         },
         {
-          "name": "destConStr",
-          "viewName": "Destination Connection String",
-          "type": "string"
-        },
-        {
-          "name": "dbNameCopy",
+          "name": "newDatabaseName",
           "viewName": "New Database Name",
           "type": "string",
           "required": true
         },
         {
-          "name": "data",
-          "viewName": "Copy With Data",
-          "type": "boolean"
+          "name": "includeData",
+          "viewName": "Include Data",
+          "description": "Copy the database including the data from all tables",
+          "type": "boolean",
+          "default": true
         }
       ]
     }
-  ],
-  "category": "DATABASE"
+  ]
 }
