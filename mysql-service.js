@@ -110,13 +110,30 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
   // if alternativeExecutablesPath is undefined then
   // the executable will be the same as executableName
   const executable = path.join(alternativeExecutablesPath || "", executableName);
-  await assertExecutableIsInstalled(executable);
+  try {
+    await assertExecutableIsInstalled(executable);
+  } catch (error) {
+    if (error.message !== `Executable ${executableName} is not installed`) {
+      throw error;
+    }
+
+    try {
+      await installMysqlCli();
+    } catch (installError) {
+      throw new Error(`${error.message}\nAttempted to install the mysql-client, but failed:\n${installError.message}`);
+    }
+  }
   return execWithArgs(executable, args);
 }
 
+async function installMysqlCli() {
+  await execWithArgs("apk", ["add", "mysql-client"]);
+  console.error("Installed mysql-client on Kaholo Agent");
+}
+
 module.exports = {
+  createConnectionDetails,
   executeQuery,
   copyDatabase,
-  createConnectionDetails,
   dumpDatabase,
 };
