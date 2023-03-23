@@ -87,7 +87,7 @@ async function restoreDatabase(params, { settings }) {
   return mysqlService.restoreDatabase({
     connectionDetails,
     databaseName,
-    dumpData,
+    dumpData: dumpData.fileContent,
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
