@@ -104,7 +104,7 @@
         {
           "name": "dumpData",
           "viewName": "Dump File Path",
-          "description": "Path to the file containing database dump in MySQL format",
+          "description": "Path to the file containing database dump in SQL format",
           "type": "string",
           "parserType": "filePath",
           "parserOptions": {
