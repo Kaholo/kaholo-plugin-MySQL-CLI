@@ -65,7 +65,7 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
     alternativeExecutablesPath: mysqlExecutablesPath,
   });
 
-  const importDumpArgs = [...commonArgs, "-e", `"source ${dumpDataPath};"`, databaseName];
+  const importDumpArgs = [...commonArgs, "-e", `source ${dumpDataPath};`, databaseName];
   console.error(`importDumpArgs: ${JSON.stringify(importDumpArgs)}`)
   console.error(`joinedDumpArgs: ${importDumpArgs.join(" ")}`)
 
