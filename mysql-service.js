@@ -42,26 +42,28 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   });
 }
 
-async function copyDatabase({ source, destination, includeData }, { mysqlExecutablesPath }) {
-  const dumpData = await dumpDatabase({
-    ...source,
-    includeData,
-  }, { mysqlExecutablesPath });
+async function restoreDatabase(params, { mysqlExecutablesPath }) {
+  const {
+    connectionDetails,
+    dumpDataPath,
+    databaseName,
+  } = params;
 
-  const destinationShellArgs = [];
-  destinationShellArgs.push(...buildMySqlShellArguments({
-    connectionDetails: destination.connectionDetails,
+  const commonArgs = buildMySqlShellArguments({
+    connectionDetails,
     includeDatabase: false,
-  }));
+  });
 
-  const createDatabaseArgs = [...destinationShellArgs, "create", destination.databaseName];
+  const createDatabaseArgs = [...commonArgs, "create", databaseName];
+
   await runMysqlExecutable({
     executableName: "mysqladmin",
     args: createDatabaseArgs,
     alternativeExecutablesPath: mysqlExecutablesPath,
   });
 
-  const importDumpArgs = [...destinationShellArgs, destination.databaseName, "-e", dumpData];
+  const importDumpArgs = [...commonArgs, "-e", `source ${dumpDataPath};`, databaseName];
+
   await runMysqlExecutable({
     executableName: "mysql",
     args: importDumpArgs,
@@ -123,6 +125,7 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
       throw new Error(`${error.message}\nAttempted to install the mysql-client, but failed:\n${installError.message}`);
     }
   }
+
   return execWithArgs(executable, args);
 }
 
@@ -134,6 +137,6 @@ async function installMysqlCli() {
 module.exports = {
   createConnectionDetails,
   executeQuery,
-  copyDatabase,
+  restoreDatabase,
   dumpDatabase,
 };

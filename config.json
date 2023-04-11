@@ -92,37 +92,26 @@
       ]
     },
     {
-      "name": "copyDatabase",
-      "viewName": "Copy a Database",
+      "name": "restoreDatabase",
+      "viewName": "Restore Database",
       "params": [
         {
-          "name": "destinationConnectionString",
-          "viewName": "Destination Connection String",
-          "type": "string"
-        },
-        {
-          "name": "destinationPassword",
-          "viewName": "Destination Password",
-          "type": "vault"
-        },
-        {
-          "name": "sourceDatabaseName",
-          "viewName": "Source Database Name",
+          "name": "databaseName",
+          "viewName": "Database Name",
           "type": "string",
           "required": true
         },
         {
-          "name": "newDatabaseName",
-          "viewName": "New Database Name",
+          "name": "dumpDataPath",
+          "viewName": "Dump File Path",
+          "description": "Path to the file containing database dump in SQL format",
           "type": "string",
+          "parserType": "filePath",
+          "parserOptions": {
+            "throwIfDoesntExist": true,
+            "acceptedTypes": "file"
+          },
           "required": true
-        },
-        {
-          "name": "includeData",
-          "viewName": "Include Data",
-          "description": "Copy the database including the data from all tables",
-          "type": "boolean",
-          "default": true
         }
       ]
     }

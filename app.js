@@ -71,36 +71,23 @@ async function dumpDatabase(params, { settings }) {
   return dumpData;
 }
 
-async function copyDatabase(params, { settings }) {
+async function restoreDatabase(params, { settings }) {
   const {
     connectionString,
     password,
-    destinationConnectionString,
-    destinationPassword,
-    newDatabaseName,
-    sourceDatabaseName,
-    includeData,
+    dumpDataPath,
+    databaseName,
   } = params;
 
-  const sourceConnectionDetails = mysqlService.createConnectionDetails({
+  const connectionDetails = mysqlService.createConnectionDetails({
     connectionString,
     password,
   });
-  const destinationConnectionDetails = mysqlService.createConnectionDetails({
-    connectionString: destinationConnectionString || connectionString,
-    password: destinationPassword || password,
-  });
 
-  return mysqlService.copyDatabase({
-    source: {
-      connectionDetails: sourceConnectionDetails,
-      databaseName: sourceDatabaseName,
-    },
-    destination: {
-      connectionDetails: destinationConnectionDetails,
-      databaseName: newDatabaseName,
-    },
-    includeData,
+  return mysqlService.restoreDatabase({
+    connectionDetails,
+    databaseName,
+    dumpDataPath: dumpDataPath.passed,
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
@@ -110,5 +97,5 @@ module.exports = kaholoPluginLibrary.bootstrap({
   executeQuery,
   executeSqlFile,
   dumpDatabase,
-  copyDatabase,
+  restoreDatabase,
 });

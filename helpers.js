@@ -9,11 +9,10 @@ const exec = promisify(childProcess.exec);
 async function execWithArgs(command, args) {
   const { stdout, stderr } = await promisify(childProcess.execFile)(command, args);
 
-  if (stderr && !stdout) {
-    throw new Error(stderr);
-  } else if (stderr) {
+  if (stderr) {
     console.error(stderr);
   }
+
   return stdout;
 }
 
