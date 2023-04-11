@@ -2,7 +2,6 @@ const path = require("path");
 const fs = require("fs/promises");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
 const mysqlService = require("./mysql-service");
-const { assertPath } = require("./helpers");
 
 async function executeQuery(params, { settings }) {
   const { connectionString, password } = params;
@@ -21,22 +20,19 @@ async function executeQuery(params, { settings }) {
 
 async function executeSqlFile(params, { settings }) {
   const {
-    sqlFilePath = "",
+    sqlFilePath,
     connectionString,
     password,
   } = params;
 
-  const absoluteSqlFilePath = path.resolve(sqlFilePath);
-  await assertPath(absoluteSqlFilePath);
   const connectionDetails = mysqlService.createConnectionDetails({
     connectionString,
     password,
   });
-  const query = await fs.readFile(sqlFilePath, { encoding: "utf-8" });
 
-  return mysqlService.executeQuery({
-    query,
+  return mysqlService.executeQueryFile({
     connectionDetails,
+    sqlFilePath: sqlFilePath.passed,
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
