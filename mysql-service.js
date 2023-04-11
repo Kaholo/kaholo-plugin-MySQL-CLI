@@ -35,6 +35,8 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   }
   args.push(databaseName);
 
+  console.error(`args: ${JSON.stringify(args)}`)
+
   return runMysqlExecutable({
     executableName: "mysqldump",
     args,
@@ -45,7 +47,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
 async function restoreDatabase(params, { mysqlExecutablesPath }) {
   const {
     connectionDetails,
-    dumpData,
+    dumpDataPath,
     databaseName,
   } = params;
 
@@ -55,13 +57,18 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 
   const createDatabaseArgs = [...commonArgs, "create", databaseName];
+  console.error(`createDatabaseArgs: ${JSON.stringify(createDatabaseArgs)}`)
+
   await runMysqlExecutable({
     executableName: "mysqladmin",
     args: createDatabaseArgs,
     alternativeExecutablesPath: mysqlExecutablesPath,
   });
 
-  const importDumpArgs = [...commonArgs, databaseName, "-e", dumpData];
+  const importDumpArgs = [...commonArgs, "-e", `"source ${dumpDataPath};"`, databaseName];
+  console.error(`importDumpArgs: ${JSON.stringify(importDumpArgs)}`)
+  console.error(`joinedDumpArgs: ${importDumpArgs.join(" ")}`)
+
   await runMysqlExecutable({
     executableName: "mysql",
     args: importDumpArgs,

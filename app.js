@@ -75,7 +75,7 @@ async function restoreDatabase(params, { settings }) {
   const {
     connectionString,
     password,
-    dumpData,
+    dumpDataPath,
     databaseName,
   } = params;
 
@@ -87,7 +87,7 @@ async function restoreDatabase(params, { settings }) {
   return mysqlService.restoreDatabase({
     connectionDetails,
     databaseName,
-    dumpData: dumpData.fileContent,
+    dumpDataPath: dumpDataPath.passed,
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });

@@ -5,7 +5,7 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.6",
+  "version": "2.0.6-kp-1123",
   "description": "execute MySQL queries and scripts via cli.",
   "category": "DATABASE",
   "auth": {
@@ -102,13 +102,14 @@
           "required": true
         },
         {
-          "name": "dumpData",
+          "name": "dumpDataPath",
           "viewName": "Dump File Path",
           "description": "Path to the file containing database dump in SQL format",
           "type": "string",
           "parserType": "filePath",
           "parserOptions": {
-            "readFileContent": true
+            "throwIfDoesntExist": true,
+            "acceptedTypes": "file"
           },
           "required": true
         }
