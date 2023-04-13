@@ -79,6 +79,10 @@
           "name": "dumpPath",
           "viewName": "Dump File Path",
           "type": "string",
+          "parserType": "filePath",
+          "parserOptions": {
+            "throwIfDoesntExist": false
+          },
           "description": "Path at which the dump file will be saved, make sure the parent directory exists",
           "required": true
         },
@@ -88,6 +92,13 @@
           "type": "boolean",
           "description": "Include in the dump all of the data from all tables",
           "default": true
+        },
+        {
+          "name": "overwrite",
+          "viewName": "Overwrite existing files",
+          "type": "boolean",
+          "description": "Overwrite file if one already exists at Dump File Path",
+          "default": false
         }
       ]
     },

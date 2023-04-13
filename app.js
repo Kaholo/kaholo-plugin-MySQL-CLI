@@ -1,7 +1,6 @@
 const path = require("path");
 const fs = require("fs/promises");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
-
 const mysqlService = require("./mysql-service");
 const { assertPath } = require("./helpers");
 
@@ -50,7 +49,21 @@ async function dumpDatabase(params, { settings }) {
     includeData,
     databaseName,
     dumpPath,
+    overwrite,
   } = params;
+
+  if (dumpPath.exists && !overwrite) {
+    throw new Error(`A file already exists at ${dumpPath.passed} and Overwrite is set to ${overwrite}.`);
+  }
+
+  const dumpDir = await kaholoPluginLibrary.parsers.filePath(path.dirname(dumpPath.absolutePath));
+  if (!dumpDir.exists) {
+    throw new Error(`Dump path includes non-existing directory ${dumpDir.absolutePath}.`);
+  }
+  if (dumpDir.type !== "directory") {
+    throw new Error(`Dump path includes ${dumpDir.absolutePath}, which is not a directory.`);
+  }
+
   const connectionDetails = mysqlService.createConnectionDetails({
     connectionString,
     password,
@@ -64,9 +77,8 @@ async function dumpDatabase(params, { settings }) {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
 
-  const absoluteDumpPath = path.resolve(dumpPath);
-  await fs.writeFile(absoluteDumpPath, dumpData);
-  console.info(`File ${absoluteDumpPath} saved!`);
+  await fs.writeFile(dumpPath.absolutePath, dumpData);
+  console.info(`File ${dumpPath.absolutePath} saved!`);
 
   return dumpData;
 }
