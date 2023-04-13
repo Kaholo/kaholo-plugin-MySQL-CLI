@@ -69,18 +69,14 @@ async function dumpDatabase(params, { settings }) {
     password,
   });
 
-  const dumpData = await mysqlService.dumpDatabase({
+  return mysqlService.dumpDatabase({
     connectionDetails,
     includeData,
     databaseName,
+    dumpPath: dumpPath.absolutePath,
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
-
-  await fs.writeFile(dumpPath.absolutePath, dumpData);
-  console.info(`File ${dumpPath.absolutePath} saved!`);
-
-  return dumpData;
 }
 
 async function restoreDatabase(params, { settings }) {

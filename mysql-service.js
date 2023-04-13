@@ -23,6 +23,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
     connectionDetails,
     includeData,
     databaseName,
+    dumpPath,
   } = params;
 
   const args = [];
@@ -33,6 +34,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   if (!includeData) {
     args.push("--no-data");
   }
+  args.push("-r", dumpPath);
   args.push(databaseName);
 
   return runMysqlExecutable({
