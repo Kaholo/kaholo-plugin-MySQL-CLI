@@ -10,8 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@kaholo/plugin-library": "github:Kaholo/kaholo-plugin-library#40a95d8751a5eb3c79a61b243917b137db9c5f4f",
-    "connection-string": "4.3.2",
-    "path": "^0.12.7"
+    "connection-string": "4.3.2"
   },
   "devDependencies": {
     "eslint": "^8.30.0",
