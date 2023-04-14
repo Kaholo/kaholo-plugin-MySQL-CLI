@@ -62,7 +62,7 @@
           "parserType": "filePath",
           "parserOptions": {
             "throwIfDoesntExist": true,
-            "acceptedTypes": "file"
+            "acceptedTypes": ["file"]
           },
           "placeholder": "queries/query_01.sql",
           "required": true

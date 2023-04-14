@@ -1,5 +1,4 @@
 const path = require("path");
-const fs = require("fs/promises");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
 const mysqlService = require("./mysql-service");
 
