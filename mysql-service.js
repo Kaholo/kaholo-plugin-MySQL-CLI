@@ -18,6 +18,26 @@ async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath
   });
 }
 
+async function executeQueryFile(params, { mysqlExecutablesPath }) {
+  const {
+    connectionDetails,
+    sqlFilePath,
+  } = params;
+
+  const commonArgs = buildMySqlShellArguments({
+    connectionDetails,
+    includeDatabase: true,
+  });
+
+  const queryFileArgs = [...commonArgs, "-e", `source ${sqlFilePath};`];
+
+  return runMysqlExecutable({
+    executableName: "mysql",
+    args: queryFileArgs,
+    alternativeExecutablesPath: mysqlExecutablesPath,
+  });
+}
+
 async function dumpDatabase(params, { mysqlExecutablesPath }) {
   const {
     connectionDetails,
@@ -139,6 +159,7 @@ async function installMysqlCli() {
 module.exports = {
   createConnectionDetails,
   executeQuery,
+  executeQueryFile,
   restoreDatabase,
   dumpDatabase,
 };
