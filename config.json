@@ -5,7 +5,7 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.6",
+  "version": "2.0.6-KP-1146",
   "description": "execute MySQL queries and scripts via cli.",
   "category": "DATABASE",
   "auth": {
@@ -76,8 +76,10 @@
         {
           "name": "databaseName",
           "viewName": "Database",
-          "type": "string",
-          "description": "Name of the database to dump",
+          "type": "autocomplete",
+          "autocompleteType": "function",
+          "functionName": "listDatabasesAuto",
+          "description": "Select the database to dump",
           "required": true
         },
         {
@@ -130,6 +132,11 @@
           "required": true
         }
       ]
+    },
+    {
+      "name": "listDatabases",
+      "viewName": "List Databases",
+      "params": []
     }
   ]
 }

@@ -17,6 +17,36 @@ async function executeQuery(params, { settings }) {
   });
 }
 
+async function listDatabases(params, { settings }) {
+  const { connectionString, password } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+
+  return mysqlService.executeQuery({
+    query: "show databases;",
+    connectionDetails,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
+}
+
+async function listDatabasesAuto(params, { settings }) {
+
+  const databases = await listDatabases(params, { settings })
+  const databasesArray = databases.split("\n").filter(element => element);
+  // shift to remove column heading "Database" from array
+  databasesArray.shift();
+
+  const mappedAutocompleteItems = databasesArray.map((db) => ({
+      id: db,
+      value: db,
+  }));
+
+  return mappedAutocompleteItems;
+}
+
 async function executeSqlFile(params, { settings }) {
   const {
     sqlFilePath,
@@ -96,9 +126,13 @@ async function restoreDatabase(params, { settings }) {
   });
 }
 
-module.exports = kaholoPluginLibrary.bootstrap({
-  executeQuery,
-  executeSqlFile,
-  dumpDatabase,
-  restoreDatabase,
-});
+module.exports = kaholoPluginLibrary.bootstrap(
+  {
+    executeQuery,
+    listDatabases,
+    listDatabasesAuto,
+    executeSqlFile,
+    dumpDatabase,
+    restoreDatabase,
+  }
+);
