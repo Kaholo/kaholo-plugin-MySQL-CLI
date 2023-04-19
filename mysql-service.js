@@ -4,12 +4,10 @@ const { ConnectionString } = require("connection-string");
 const { execWithArgs, assertExecutableIsInstalled } = require("./helpers");
 
 async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath } = {}) {
-  const args = [];
-  args.push(...buildMySqlShellArguments({
+  const args = buildMySqlShellArguments({
     connectionDetails,
     includeDatabase: true,
-  }));
-  args.push("-e", query);
+  }).concat("-e", query);
 
   return runMysqlExecutable({
     executableName: "mysql",
@@ -93,6 +91,13 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 }
 
+function listDatabases({ connectionDetails }, settings) {
+  return executeQuery({
+    query: "SHOW DATABASES;",
+    connectionDetails,
+  }, settings);
+}
+
 function createConnectionDetails({ connectionString, password }) {
   const connectionDetails = new ConnectionString(connectionString);
 
@@ -162,4 +167,5 @@ module.exports = {
   executeQueryFile,
   restoreDatabase,
   dumpDatabase,
+  listDatabases,
 };

@@ -25,10 +25,7 @@ async function listDatabases(params, { settings }) {
     password,
   });
 
-  return mysqlService.executeQuery({
-    query: "show databases;",
-    connectionDetails,
-  }, {
+  return mysqlService.listDatabases({ connectionDetails }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
 }
