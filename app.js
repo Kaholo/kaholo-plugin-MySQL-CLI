@@ -1,6 +1,7 @@
 const path = require("path");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
 const mysqlService = require("./mysql-service");
+const autocomplete = require("./autocomplete");
 
 async function executeQuery(params, { settings }) {
   const { connectionString, password } = params;
@@ -30,21 +31,6 @@ async function listDatabases(params, { settings }) {
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
-}
-
-async function listDatabasesAuto(params, { settings }) {
-
-  const databases = await listDatabases(params, { settings })
-  const databasesArray = databases.split("\n").filter(element => element);
-  // shift to remove column heading "Database" from array
-  databasesArray.shift();
-
-  const mappedAutocompleteItems = databasesArray.map((db) => ({
-      id: db,
-      value: db,
-  }));
-
-  return mappedAutocompleteItems;
 }
 
 async function executeSqlFile(params, { settings }) {
@@ -130,9 +116,9 @@ module.exports = kaholoPluginLibrary.bootstrap(
   {
     executeQuery,
     listDatabases,
-    listDatabasesAuto,
     executeSqlFile,
     dumpDatabase,
     restoreDatabase,
-  }
+  },
+  autocomplete,
 );
