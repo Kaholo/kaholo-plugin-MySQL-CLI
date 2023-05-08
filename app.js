@@ -127,7 +127,8 @@ async function runMySQLCLICommand(params) {
     execOptions.cwd = workingDirectory.absolutePath;
   }
 
-  return execCmd(command, execOptions);
+  const mysqlCliCommand = command.startsWith("mysql") ? command : `mysql ${command}`;
+  return execCmd(mysqlCliCommand, execOptions);
 }
 
 module.exports = kaholoPluginLibrary.bootstrap({
