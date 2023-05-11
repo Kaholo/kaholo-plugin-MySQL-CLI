@@ -1,7 +1,10 @@
 const path = require("path");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
+
 const mysqlService = require("./mysql-service");
 const autocomplete = require("./autocomplete");
+
+const { execCmd } = require("./helpers");
 
 async function executeQuery(params, { settings }) {
   const { connectionString, password } = params;
@@ -109,13 +112,30 @@ async function restoreDatabase(params, { settings }) {
   });
 }
 
-module.exports = kaholoPluginLibrary.bootstrap(
-  {
-    executeQuery,
-    listDatabases,
-    executeSqlFile,
-    dumpDatabase,
-    restoreDatabase,
-  },
-  autocomplete,
-);
+async function runMySQLCLICommand(params) {
+  const {
+    environmentVariables,
+    workingDirectory,
+    command,
+  } = params;
+
+  const execOptions = {};
+  if (environmentVariables) {
+    execOptions.env = environmentVariables;
+  }
+  if (workingDirectory) {
+    execOptions.cwd = workingDirectory.absolutePath;
+  }
+
+  const mysqlCliCommand = command.startsWith("mysql") ? command : `mysql ${command}`;
+  return execCmd(mysqlCliCommand, execOptions);
+}
+
+module.exports = kaholoPluginLibrary.bootstrap({
+  executeQuery,
+  executeSqlFile,
+  dumpDatabase,
+  restoreDatabase,
+  listDatabases,
+  runMySQLCLICommand,
+}, autocomplete);

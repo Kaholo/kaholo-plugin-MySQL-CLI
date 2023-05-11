@@ -16,6 +16,16 @@ async function execWithArgs(command, args) {
   return stdout;
 }
 
+async function execCmd(command, execOptions = {}) {
+  const { stdout, stderr } = await exec(command, execOptions);
+
+  if (stderr) {
+    console.error(stderr);
+  }
+
+  return stdout;
+}
+
 async function assertPath(filePath) {
   try {
     await access(filePath, fs.constants.F_OK);
@@ -41,7 +51,7 @@ async function assertExecutableIsInstalled(executableOrPath) {
 
 module.exports = {
   execWithArgs,
-  exec,
+  execCmd,
   assertExecutableIsInstalled,
   assertPath,
 };
