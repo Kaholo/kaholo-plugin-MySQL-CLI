@@ -139,7 +139,6 @@ function buildMySqlShellArguments(payload) {
   if (includeDatabase && connectionDetails.path) {
     args.push("-D", connectionDetails.path.join("/"));
   }
-  args.push("--protocol", "tcp");
 
   return args;
 }
