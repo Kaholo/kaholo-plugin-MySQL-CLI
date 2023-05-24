@@ -76,22 +76,20 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 
   if (options.dropExistingDatabase) {
-    const dropDatabaseArgs = [...commonArgs, "drop", databaseName, "-f"];
+    const dropDatabaseArgs = [...commonArgs, "-e", `"DROP DATABASE IF EXISTS \\"${databaseName}\\";"`];
     await runMysqlExecutable({
-      executableName: "mysqladmin",
+      executableName: "mysql",
       args: dropDatabaseArgs,
       alternativeExecutablesPath: mysqlExecutablesPath,
     });
   }
 
-  if (!options.useExistingDatabase) {
-    const createDatabaseArgs = [...commonArgs, "create", databaseName];
-    await runMysqlExecutable({
-      executableName: "mysqladmin",
-      args: createDatabaseArgs,
-      alternativeExecutablesPath: mysqlExecutablesPath,
-    });
-  }
+  const createDatabaseArgs = [...commonArgs, "create", databaseName];
+  await runMysqlExecutable({
+    executableName: "mysqladmin",
+    args: createDatabaseArgs,
+    alternativeExecutablesPath: mysqlExecutablesPath,
+  });
 
   const importDumpArgs = [...commonArgs, "-e", `source ${dumpDataPath};`, databaseName];
   await runMysqlExecutable({
@@ -141,6 +139,7 @@ function buildMySqlShellArguments(payload) {
   if (includeDatabase && connectionDetails.path) {
     args.push("-D", connectionDetails.path.join("/"));
   }
+  args.push("--protocol", "tcp");
 
   return args;
 }
