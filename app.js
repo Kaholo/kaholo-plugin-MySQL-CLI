@@ -96,7 +96,6 @@ async function restoreDatabase(params, { settings }) {
     password,
     dumpDataPath,
     databaseName,
-    useExistingDatabase,
     dropExistingDatabase,
   } = params;
 
@@ -110,7 +109,6 @@ async function restoreDatabase(params, { settings }) {
     databaseName,
     dumpDataPath: dumpDataPath.passed,
     options: {
-      useExistingDatabase,
       dropExistingDatabase,
     },
   }, {
