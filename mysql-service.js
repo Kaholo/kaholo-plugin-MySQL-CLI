@@ -76,7 +76,7 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 
   if (options.dropExistingDatabase) {
-    const dropDatabaseArgs = [...commonArgs, "-e", `"DROP DATABASE IF EXISTS \\"${databaseName}\\";"`];
+    const dropDatabaseArgs = [...commonArgs, "-e", `DROP DATABASE IF EXISTS \`${databaseName}\`;`];
     await runMysqlExecutable({
       executableName: "mysql",
       args: dropDatabaseArgs,
