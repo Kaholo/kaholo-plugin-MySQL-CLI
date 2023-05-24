@@ -96,6 +96,8 @@ async function restoreDatabase(params, { settings }) {
     password,
     dumpDataPath,
     databaseName,
+    useExistingDatabase,
+    dropExistingDatabase,
   } = params;
 
   const connectionDetails = mysqlService.createConnectionDetails({
@@ -107,6 +109,10 @@ async function restoreDatabase(params, { settings }) {
     connectionDetails,
     databaseName,
     dumpDataPath: dumpDataPath.passed,
+    options: {
+      useExistingDatabase,
+      dropExistingDatabase,
+    },
   }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });

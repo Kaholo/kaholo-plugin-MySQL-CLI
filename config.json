@@ -130,6 +130,18 @@
             "acceptedTypes": "file"
           },
           "required": true
+        },
+        {
+          "name": "dropExistingDatabase",
+          "viewName": "Drop Existing Database",
+          "description": "If enabled, existing database is dropped and replaced",
+          "type": "boolean"
+        },
+        {
+          "name": "useExistingDatabase",
+          "viewName": "Use Existing Database",
+          "description": "If false, new database is created for restoring dump file. If database already exists, action fails",
+          "type": "boolean"
         }
       ]
     },
