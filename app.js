@@ -64,7 +64,7 @@ async function dumpDatabase(params, { settings }) {
   } = params;
 
   if (dumpPath.exists && !overwrite) {
-    throw new Error(`A file already exists at ${dumpPath.passed} and Overwrite is set to ${overwrite}.`);
+    throw new Error(`A file already exists at ${dumpPath.passed} and \"Overwrite existing files\" is set to ${overwrite}.`);
   }
 
   const dumpDir = await kaholoPluginLibrary.parsers.filePath(path.dirname(dumpPath.absolutePath));

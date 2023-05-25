@@ -55,6 +55,8 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   args.push("-r", dumpPath);
   args.push(databaseName);
 
+  console.info(`Dumping database ${databaseName} to file ${dumpPath}...`);
+
   return runMysqlExecutable({
     executableName: "mysqldump",
     args,
@@ -77,6 +79,9 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
 
   if (options.dropExistingDatabase) {
     const dropDatabaseArgs = [...commonArgs, "-e", `DROP DATABASE IF EXISTS \`${databaseName}\`;`];
+
+    console.info(`Dropping database ${databaseName} (if it exists)...`);
+
     await runMysqlExecutable({
       executableName: "mysql",
       args: dropDatabaseArgs,
@@ -85,6 +90,9 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   }
 
   const createDatabaseArgs = [...commonArgs, "create", databaseName];
+
+  console.info(`Creating new database ${databaseName}...`);
+
   await runMysqlExecutable({
     executableName: "mysqladmin",
     args: createDatabaseArgs,
@@ -92,6 +100,9 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 
   const importDumpArgs = [...commonArgs, "-e", `source ${dumpDataPath};`, databaseName];
+
+  console.info(`Restoring dump file ${dumpDataPath} to database ${databaseName}...`);
+
   await runMysqlExecutable({
     executableName: "mysql",
     args: importDumpArgs,
