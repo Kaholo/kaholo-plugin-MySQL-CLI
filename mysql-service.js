@@ -67,6 +67,7 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
     connectionDetails,
     dumpDataPath,
     databaseName,
+    options = {},
   } = params;
 
   const commonArgs = buildMySqlShellArguments({
@@ -74,8 +75,16 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
     includeDatabase: false,
   });
 
-  const createDatabaseArgs = [...commonArgs, "create", databaseName];
+  if (options.dropExistingDatabase) {
+    const dropDatabaseArgs = [...commonArgs, "-e", `DROP DATABASE IF EXISTS \`${databaseName}\`;`];
+    await runMysqlExecutable({
+      executableName: "mysql",
+      args: dropDatabaseArgs,
+      alternativeExecutablesPath: mysqlExecutablesPath,
+    });
+  }
 
+  const createDatabaseArgs = [...commonArgs, "create", databaseName];
   await runMysqlExecutable({
     executableName: "mysqladmin",
     args: createDatabaseArgs,
@@ -83,7 +92,6 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
   });
 
   const importDumpArgs = [...commonArgs, "-e", `source ${dumpDataPath};`, databaseName];
-
   await runMysqlExecutable({
     executableName: "mysql",
     args: importDumpArgs,

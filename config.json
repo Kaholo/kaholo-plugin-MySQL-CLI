@@ -130,6 +130,12 @@
             "acceptedTypes": "file"
           },
           "required": true
+        },
+        {
+          "name": "dropExistingDatabase",
+          "viewName": "Drop Existing Database",
+          "description": "If enabled, existing database is dropped and replaced",
+          "type": "boolean"
         }
       ]
     },
