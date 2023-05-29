@@ -54,17 +54,23 @@ This method dumps Database Tables and if specified also data into a file.
 ### Parameter: Database
 The name of the database to dump.
 
-### Parameter: File Path
-The path on the Kaholo agent of the dump file to create.
+### Parameter: Dump File Path
+The path on the Kaholo agent of the dump file to create. Both relative and absolute paths are accepted.
 
 ### Parameter: Include Data
-If selected, data will be dumped as well as the schema of the database. By default data is NOT included.
+If selected, data will be dumped as well as the schema of the database. By default data is included.
+
+### Parameter: Overwrite Existing Files
+If enabled, any file at the "Dump File Path" will be overwritten. Otherwise if the file already exists a `file already exists` error will occur.
 
 ## Method: Restore Database
 Restores a database to a MySQL server using a dump file of the type created in method Dump Database.
 
-### Parameter: New Database Name
-The name of the database to which the dump should be restored.
+### Parameter: Database Name
+The name of the database to which the dump should be restored. If the database does not exist, it will be created.
 
+### Parameter: Dump File Path
+The path on the Kaholo agent of the dump file to restore. Both relative and absolute paths are accepted.
 
-
+### Parameter: Drop Existing Database
+If enabled and the database specified in "Database Name" exists, the existing database will be dropped and a new database of the same name created. Otherwise, a `database exists` error will occur.
