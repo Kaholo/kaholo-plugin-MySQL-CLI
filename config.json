@@ -5,7 +5,7 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.6",
+  "version": "3.0.0",
   "description": "execute MySQL queries and scripts via cli.",
   "category": "DATABASE",
   "auth": {
