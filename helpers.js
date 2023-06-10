@@ -2,18 +2,53 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const { access } = require("fs/promises");
 const path = require("path");
+const util = require("util");
 const { promisify } = require("util");
-
 const exec = promisify(childProcess.exec);
 
-async function execWithArgs(command, args) {
-  const { stdout, stderr } = await promisify(childProcess.execFile)(command, args);
+async function execWithArgs(params) {
 
-  if (stderr) {
-    console.error(stderr);
+  const {
+    executable,
+    args,
+    onProgressFn,
+  } = params;
+
+  let childProcessError;
+  let childProcessInstance;
+  try {
+    childProcessInstance = childProcess.execFile(executable, args);
+  } catch (error) {
+    return { error };
   }
 
-  return stdout;
+  const outputChunks = [];
+
+  childProcessInstance.stdout.on("data", (data) => {
+    outputChunks.push({ type: "stdout", data });
+    onProgressFn?.(data);
+  });
+  childProcessInstance.stderr.on("data", (data) => {
+    outputChunks.push({ type: "stderr", data });
+    onProgressFn?.(data);
+  });
+  childProcessInstance.on("error", (error) => {
+    childProcessError = error;
+    onProgressFn?.(`ERROR: ${error.message}`);
+  });
+
+  await util.promisify(childProcessInstance.on.bind(childProcessInstance))("close");
+
+  // const outputObject = outputChunks.reduce((acc, cur) => ({
+  //   ...acc,
+  //   [cur.type]: `${acc[cur.type]}${cur.data.toString()}`,
+  // }), { stdout: "", stderr: "" });
+
+  // if (childProcessError) {
+  //   outputObject.error = childProcessError;
+  // }
+
+  // return outputObject;
 }
 
 async function execCmd(command, execOptions = {}) {

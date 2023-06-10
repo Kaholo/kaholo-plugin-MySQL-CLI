@@ -9,7 +9,7 @@ async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath
     includeDatabase: true,
   }).concat("-e", query);
 
-  return runMysqlExecutable({
+  await runMysqlExecutable({
     executableName: "mysql",
     args,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -29,7 +29,7 @@ async function executeQueryFile(params, { mysqlExecutablesPath }) {
 
   const queryFileArgs = [...commonArgs, "-e", `source ${sqlFilePath};`];
 
-  return runMysqlExecutable({
+  await runMysqlExecutable({
     executableName: "mysql",
     args: queryFileArgs,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -57,7 +57,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
 
   console.info(`Dumping database ${databaseName} to file ${dumpPath}...`);
 
-  return runMysqlExecutable({
+  await runMysqlExecutable({
     executableName: "mysqldump",
     args,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -172,7 +172,11 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
     }
   }
 
-  return execWithArgs(executable, args);
+  await execWithArgs({
+    executable: executable,
+    args: args,
+    onProgressFn: process.stdout.write.bind(process.stdout),
+  });
 }
 
 async function installMysqlCli() {
