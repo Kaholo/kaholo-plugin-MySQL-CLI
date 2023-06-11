@@ -6,9 +6,6 @@ async function listDatabasesAuto(query, params, { settings }) {
     connectionString,
     password,
   });
-  console.error(`KOTCHI-ACSTRING: ${JSON.stringify(connectionString)}`)
-  console.error(`KOTCHI-ACPASS: ${JSON.stringify(password)}`)
-  console.error(`KOTCHI-ACDETAILS: ${JSON.stringify(connectionDetails)}`)
   const databasesRawResult = await mysqlService.listDatabases({ connectionDetails }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });

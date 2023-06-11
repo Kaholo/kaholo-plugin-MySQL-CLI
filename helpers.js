@@ -15,7 +15,6 @@ async function execWithArgs(params) {
     onProgressFn,
   } = params;
 
-  console.error(`COMMAND IS: ${executable} ${args.join(" ")}`)
   const childProcessInstance = childProcess.execFile(executable, args);
 
   const outputChunks = [];
@@ -110,7 +109,6 @@ async function getJsonFromResult(result) {
   if (restIsJson) {
     return restIsJson;
   }
-  console.info("\nTo get Final Result as well-formed JSON object, use query such as \"SELECT JSON_ARRAYAGG(JSON_OBJECT('id', id, 'name', name)) from items;\"\n");
   return constants.EMPTY_RETURN_VALUE;
 }
 

@@ -1,7 +1,6 @@
 const path = require("path");
 const { ConnectionString } = require("connection-string");
 const { execWithArgs, execWithArgsSimple, assertExecutableIsInstalled } = require("./helpers");
-const constants = require("./consts.json");
 
 async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath } = {}) {
   const args = buildMySqlShellArguments({
@@ -111,11 +110,7 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
 }
 
 function listDatabases({ connectionDetails }, settings) {
-
   const executable = path.join(settings.mysqlExecutablesPath || "", "mysql");
-  console.error(`KOTCHI-EXECUTABLE: ${executable}`)
-  console.error(`KOTCHI-DETAILS: ${JSON.stringify(connectionDetails)}`)
-
   const args = buildMySqlShellArguments({
     connectionDetails,
     includeDatabase: false,
