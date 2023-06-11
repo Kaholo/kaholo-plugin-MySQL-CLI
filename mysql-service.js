@@ -1,6 +1,7 @@
 const path = require("path");
 const { ConnectionString } = require("connection-string");
-const { execWithArgs, assertExecutableIsInstalled } = require("./helpers");
+const { execWithArgs, execWithArgsSimple, assertExecutableIsInstalled } = require("./helpers");
+const constants = require("./consts.json");
 
 async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath } = {}) {
   const args = buildMySqlShellArguments({
@@ -46,7 +47,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   const args = [];
   args.push(...buildMySqlShellArguments({
     connectionDetails,
-    includeDatabasePath: false,
+    includeDatabase: false,
   }));
   if (!includeData) {
     args.push("--no-data");
@@ -110,10 +111,17 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
 }
 
 function listDatabases({ connectionDetails }, settings) {
-  return executeQuery({
-    query: "SHOW DATABASES;",
+
+  const executable = path.join(settings.mysqlExecutablesPath || "", "mysql");
+  console.error(`KOTCHI-EXECUTABLE: ${executable}`)
+  console.error(`KOTCHI-DETAILS: ${JSON.stringify(connectionDetails)}`)
+
+  const args = buildMySqlShellArguments({
     connectionDetails,
-  }, settings);
+    includeDatabase: false,
+  }).concat("-e", "SHOW DATABASES;");
+
+  return execWithArgsSimple(executable, args);
 }
 
 function listDatabasesJson({ connectionDetails }, settings) {
@@ -167,7 +175,7 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
   try {
     await assertExecutableIsInstalled(executable);
   } catch (error) {
-    if (error.message !== `Executable ${executableName} is not installed`) {
+    if (error.message !== `Executable ${executableName} was not found.`) {
       throw error;
     }
 
@@ -186,7 +194,7 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
 }
 
 async function installMysqlCli() {
-  await execWithArgs("apk", ["add", "mysql-client"]);
+  await execWithArgsSimple("apk", ["add", "mysql-client"]);
   console.error("Installed mysql-client on Kaholo Agent");
 }
 

@@ -15,6 +15,7 @@ async function execWithArgs(params) {
     onProgressFn,
   } = params;
 
+  console.error(`COMMAND IS: ${executable} ${args.join(" ")}`)
   const childProcessInstance = childProcess.execFile(executable, args);
 
   const outputChunks = [];
@@ -47,6 +48,16 @@ async function execWithArgs(params) {
   return getJsonFromResult(outputObject.stdout);
 }
 
+async function execWithArgsSimple(command, args) {
+  const { stdout, stderr } = await promisify(childProcess.execFile)(command, args);
+
+  if (stderr) {
+    console.error(stderr);
+  }
+
+  return stdout;
+}
+
 async function execCmd(command, execOptions = {}) {
   const { stdout, stderr } = await exec(command, execOptions);
 
@@ -61,7 +72,7 @@ async function assertPath(filePath) {
   try {
     await access(filePath, fs.constants.F_OK);
   } catch {
-    throw new Error(`Path ${filePath} does not exist on the agent`);
+    throw new Error(`Path ${filePath} does not exist on the agent.`);
   }
 }
 
@@ -74,7 +85,7 @@ async function assertExecutableIsInstalled(executableOrPath) {
   try {
     await exec(`which ${executableOrPath}`);
   } catch {
-    throw new Error(`Executable ${executableOrPath} is not installed`);
+    throw new Error(`Executable ${executableOrPath} was not found.`);
   }
 
   return true;
@@ -105,6 +116,7 @@ async function getJsonFromResult(result) {
 
 module.exports = {
   execWithArgs,
+  execWithArgsSimple,
   execCmd,
   assertExecutableIsInstalled,
   assertPath,
