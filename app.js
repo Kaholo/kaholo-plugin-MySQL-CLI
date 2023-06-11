@@ -1,9 +1,7 @@
 const path = require("path");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
-
 const mysqlService = require("./mysql-service");
 const autocomplete = require("./autocomplete");
-
 const { execCmd } = require("./helpers");
 
 async function executeQuery(params, { settings }) {

@@ -1,6 +1,5 @@
 const path = require("path");
 const { ConnectionString } = require("connection-string");
-
 const { execWithArgs, assertExecutableIsInstalled } = require("./helpers");
 
 async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath } = {}) {
@@ -9,7 +8,7 @@ async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath
     includeDatabase: true,
   }).concat("-e", query);
 
-  await runMysqlExecutable({
+  return runMysqlExecutable({
     executableName: "mysql",
     args,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -172,9 +171,9 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
     }
   }
 
-  await execWithArgs({
-    executable: executable,
-    args: args,
+  return execWithArgs({
+    executable,
+    args,
     onProgressFn: process.stdout.write.bind(process.stdout),
   });
 }
