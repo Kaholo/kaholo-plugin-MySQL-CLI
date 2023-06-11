@@ -116,6 +116,13 @@ function listDatabases({ connectionDetails }, settings) {
   }, settings);
 }
 
+function listDatabasesJson({ connectionDetails }, settings) {
+  return executeQuery({
+    query: "USE information_schema; SELECT JSON_ARRAYAGG(schema_name) FROM schemata;",
+    connectionDetails,
+  }, settings);
+}
+
 function createConnectionDetails({ connectionString, password }) {
   const connectionDetails = new ConnectionString(connectionString);
 
@@ -190,4 +197,5 @@ module.exports = {
   restoreDatabase,
   dumpDatabase,
   listDatabases,
+  listDatabasesJson,
 };
