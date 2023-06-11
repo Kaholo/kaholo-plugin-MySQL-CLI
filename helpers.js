@@ -4,8 +4,9 @@ const { access } = require("fs/promises");
 const path = require("path");
 const util = require("util");
 const { promisify } = require("util");
-const exec = promisify(childProcess.exec);
 const constants = require("./consts.json");
+
+const exec = promisify(childProcess.exec);
 
 async function execWithArgs(params) {
   const {
@@ -39,10 +40,11 @@ async function execWithArgs(params) {
     [cur.type]: `${acc[cur.type]}${cur.data.toString()}`,
   }), { stdout: "", stderr: "" });
 
-  if (errors > 0) {
-    return constants.EMPTY_RETURN_VALUE
+  if (errors > 0 || outputObject.stderr !== "") {
+    return constants.EMPTY_RETURN_VALUE;
   }
-  return outputObject;
+  // return JSON or nothing
+  return getJsonFromResult(outputObject.stdout);
 }
 
 async function execCmd(command, execOptions = {}) {
@@ -76,6 +78,29 @@ async function assertExecutableIsInstalled(executableOrPath) {
   }
 
   return true;
+}
+
+function getJson(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return false;
+  }
+}
+
+// for query such as SELECT JSON_ARRAYAGG(JSON_OBJECT('name', name, 'phone', phone)) from Person;
+async function getJsonFromResult(result) {
+  const allIsJson = getJson(result);
+  if (allIsJson) {
+    return allIsJson;
+  }
+  // queries may return the function followed by JSON result as [] in single string
+  const restIsJson = getJson(result.substring(result.indexOf("[")));
+  if (restIsJson) {
+    return restIsJson;
+  }
+  console.info("\nTo get Final Result as well-formed JSON object, use query such as \"SELECT JSON_ARRAYAGG(JSON_OBJECT('id', id, 'name', name)) from items;\"\n");
+  return constants.EMPTY_RETURN_VALUE;
 }
 
 module.exports = {
