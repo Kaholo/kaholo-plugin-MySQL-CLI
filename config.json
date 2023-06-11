@@ -54,6 +54,7 @@
     {
       "name": "executeSqlFile",
       "viewName": "Execute SQL File",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "sqlFilePath",
@@ -73,6 +74,7 @@
     {
       "name": "dumpDatabase",
       "viewName": "Dump a Database",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "databaseName",
@@ -113,6 +115,7 @@
     {
       "name": "restoreDatabase",
       "viewName": "Restore Database",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "databaseName",
