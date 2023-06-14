@@ -51,7 +51,7 @@ async function execWithArgsSimple(command, args) {
   const { stdout, stderr } = await promisify(childProcess.execFile)(command, args);
 
   if (stderr) {
-    console.error(stderr);
+    return constants.EMPTY_RETURN_VALUE;
   }
 
   return stdout;
@@ -61,7 +61,7 @@ async function execCmd(command, execOptions = {}) {
   const { stdout, stderr } = await exec(command, execOptions);
 
   if (stderr) {
-    console.error(stderr);
+    return constants.EMPTY_RETURN_VALUE;
   }
 
   return stdout;
