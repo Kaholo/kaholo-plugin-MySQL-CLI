@@ -5,7 +5,7 @@
   "imgUrl": "logo.png",
   "execProgram": "node",
   "main": "app.js",
-  "version": "2.0.6",
+  "version": "2.0.6-KP-1203",
   "description": "execute MySQL queries and scripts via cli.",
   "category": "DATABASE",
   "auth": {
@@ -40,6 +40,7 @@
     {
       "name": "executeQuery",
       "viewName": "Execute Query",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "query",
@@ -53,6 +54,7 @@
     {
       "name": "executeSqlFile",
       "viewName": "Execute SQL File",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "sqlFilePath",
@@ -72,6 +74,7 @@
     {
       "name": "dumpDatabase",
       "viewName": "Dump a Database",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "databaseName",
@@ -112,6 +115,7 @@
     {
       "name": "restoreDatabase",
       "viewName": "Restore Database",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "databaseName",
@@ -142,6 +146,7 @@
     {
       "name": "runMySQLCLICommand",
       "viewName": "Run MySQL CLI Command",
+      "allowEmptyResult": true,
       "params": [
         {
           "name": "command",

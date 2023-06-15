@@ -9,7 +9,7 @@
   "author": "Kaholo Team",
   "license": "ISC",
   "dependencies": {
-    "@kaholo/plugin-library": "^2.2.1",
+    "@kaholo/plugin-library": "2.2.1",
     "connection-string": "4.3.2"
   },
   "devDependencies": {

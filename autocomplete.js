@@ -6,7 +6,6 @@ async function listDatabasesAuto(query, params, { settings }) {
     connectionString,
     password,
   });
-
   const databasesRawResult = await mysqlService.listDatabases({ connectionDetails }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });

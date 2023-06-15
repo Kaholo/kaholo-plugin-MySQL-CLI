@@ -1,9 +1,7 @@
 const path = require("path");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
-
 const mysqlService = require("./mysql-service");
 const autocomplete = require("./autocomplete");
-
 const { execCmd } = require("./helpers");
 
 async function executeQuery(params, { settings }) {
@@ -40,12 +38,9 @@ async function listDatabasesJson(params, { settings }) {
     password,
   });
 
-  const databasesRawResult = await mysqlService.listDatabases({ connectionDetails }, {
+  return mysqlService.listDatabasesJson({ connectionDetails }, {
     mysqlExecutablesPath: settings.mysqlExecutablesPath,
   });
-
-  // filter to remove empty elements, slice to remove column heading "Database"
-  return `{"Databases": ["${databasesRawResult.split("\n").filter((element) => element).slice(1).join("\",\"")}"]}`;
 }
 
 async function executeSqlFile(params, { settings }) {

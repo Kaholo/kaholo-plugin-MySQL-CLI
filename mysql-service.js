@@ -1,7 +1,6 @@
 const path = require("path");
 const { ConnectionString } = require("connection-string");
-
-const { execWithArgs, assertExecutableIsInstalled } = require("./helpers");
+const { execWithArgs, execWithArgsSimple, assertExecutableIsInstalled } = require("./helpers");
 
 async function executeQuery({ query, connectionDetails }, { mysqlExecutablesPath } = {}) {
   const args = buildMySqlShellArguments({
@@ -29,7 +28,7 @@ async function executeQueryFile(params, { mysqlExecutablesPath }) {
 
   const queryFileArgs = [...commonArgs, "-e", `source ${sqlFilePath};`];
 
-  return runMysqlExecutable({
+  await runMysqlExecutable({
     executableName: "mysql",
     args: queryFileArgs,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -47,7 +46,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
   const args = [];
   args.push(...buildMySqlShellArguments({
     connectionDetails,
-    includeDatabasePath: false,
+    includeDatabase: false,
   }));
   if (!includeData) {
     args.push("--no-data");
@@ -57,7 +56,7 @@ async function dumpDatabase(params, { mysqlExecutablesPath }) {
 
   console.info(`Dumping database ${databaseName} to file ${dumpPath}...`);
 
-  return runMysqlExecutable({
+  await runMysqlExecutable({
     executableName: "mysqldump",
     args,
     alternativeExecutablesPath: mysqlExecutablesPath,
@@ -111,8 +110,18 @@ async function restoreDatabase(params, { mysqlExecutablesPath }) {
 }
 
 function listDatabases({ connectionDetails }, settings) {
+  const executable = path.join(settings.mysqlExecutablesPath || "", "mysql");
+  const args = buildMySqlShellArguments({
+    connectionDetails,
+    includeDatabase: false,
+  }).concat("-e", "SHOW DATABASES;");
+
+  return execWithArgsSimple(executable, args);
+}
+
+function listDatabasesJson({ connectionDetails }, settings) {
   return executeQuery({
-    query: "SHOW DATABASES;",
+    query: "USE information_schema; SELECT JSON_ARRAYAGG(schema_name) FROM schemata;",
     connectionDetails,
   }, settings);
 }
@@ -161,7 +170,7 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
   try {
     await assertExecutableIsInstalled(executable);
   } catch (error) {
-    if (error.message !== `Executable ${executableName} is not installed`) {
+    if (error.message !== `Executable ${executableName} was not found.`) {
       throw error;
     }
 
@@ -172,11 +181,15 @@ async function runMysqlExecutable({ executableName, args, alternativeExecutables
     }
   }
 
-  return execWithArgs(executable, args);
+  return execWithArgs({
+    executable,
+    args,
+    onProgressFn: process.stdout.write.bind(process.stdout),
+  });
 }
 
 async function installMysqlCli() {
-  await execWithArgs("apk", ["add", "mysql-client"]);
+  await execWithArgsSimple("apk", ["add", "mysql-client"]);
   console.error("Installed mysql-client on Kaholo Agent");
 }
 
@@ -187,4 +200,5 @@ module.exports = {
   restoreDatabase,
   dumpDatabase,
   listDatabases,
+  listDatabasesJson,
 };
