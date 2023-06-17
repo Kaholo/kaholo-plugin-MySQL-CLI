@@ -28,7 +28,7 @@ async function executeQueryFile(params, { mysqlExecutablesPath }) {
 
   const queryFileArgs = [...commonArgs, "-e", `source ${sqlFilePath};`];
 
-  await runMysqlExecutable({
+  return runMysqlExecutable({
     executableName: "mysql",
     args: queryFileArgs,
     alternativeExecutablesPath: mysqlExecutablesPath,

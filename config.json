@@ -74,7 +74,7 @@
     {
       "name": "dumpDatabase",
       "viewName": "Dump a Database",
-      "allowEmptyResult": true,
+      "allowEmptyResult": false,
       "params": [
         {
           "name": "databaseName",
@@ -115,7 +115,7 @@
     {
       "name": "restoreDatabase",
       "viewName": "Restore Database",
-      "allowEmptyResult": true,
+      "allowEmptyResult": false,
       "params": [
         {
           "name": "databaseName",
