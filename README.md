@@ -44,6 +44,57 @@ One must include `USE mydb;` in the query:
 
     USE mydb; SHOW TABLES;
 
+## Getting JSON Output
+The output of any query as seen in Activity Log is accessible as plain text using the Kaholo code layer, e.g. `kaholo.actions.MySQLCLI7318d3.output`. However to use the result in downstream conditionals and Action parameters, it is much easier to work with if you can access the Final Result as well-formed JSON. For example, running method "List Databases" provides the list as a JSON array of strings that could then be used in the code layer, for example as a conditional regarding whether or not database "kaholowiki" has been found:
+
+    function kaholowikiFound() {
+      const dbArray = kaholo.actions.MySQLCLI1.result;
+      return(dbArray.includes("kaholowiki"))
+    }
+
+The plugin will attempt to parse any result for JSON. If the entire result of the query or all but the first line of the result parse as JSON then the plugin will succeed in returning it to Final Result as an object. To get query results formed as JSON, make use of MySQL functions `JSON_OBJECT` and `JSON_ARRAYAGG`.
+
+For example if query `SELECT * FROM animals;` returns this data:
+
+    idanimals name_common family lifespan carnivorous
+    2551 Grasshopper insect 0.8 0
+    22166 Shark fish 94.3 1
+    23525 Lion mammals 58 1
+    72452 Iguana reptile 27 0
+
+Then query `SELECT JSON_ARRAYAGG(JSON_OBJECT('idanimals', idanimals, 'name_common', name_common, 'family',family,'lifespan',lifespan,'carnivorous',carnivorous)) from animals;` returns the same data as JSON:
+
+    [
+      {
+        "family": "insect",
+        "lifespan": 0.800000011920929,
+        "idanimals": 2551,
+        "carnivorous": 0,
+        "name_common": "Grasshopper"
+      },
+      {
+        "family": "fish",
+        "lifespan": 94.30000305175781,
+        "idanimals": 22166,
+        "carnivorous": 1,
+        "name_common": "Shark"
+      },
+      {
+        "family": "mammals",
+        "lifespan": 58,
+        "idanimals": 23525,
+        "carnivorous": 1,
+        "name_common": "Lion"
+      },
+      {
+        "family": "reptile",
+        "lifespan": 27,
+        "idanimals": 72452,
+        "carnivorous": 0,
+        "name_common": "Iguana"
+      }
+    ]
+
 ## Method: Execute Query
 This method executes a query that is defined as text in the Action's parameters.
 
