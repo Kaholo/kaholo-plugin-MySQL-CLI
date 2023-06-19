@@ -1,81 +1,156 @@
-const fs = require("fs/promises");
+const path = require("path");
 const kaholoPluginLibrary = require("@kaholo/plugin-library");
-
-const {
-  execCmd,
-  parseConnectionStringToShellArguments,
-} = require("./helpers");
+const mysqlService = require("./mysql-service");
+const autocomplete = require("./autocomplete");
+const { execCmd } = require("./helpers");
 
 async function executeQuery(params, { settings }) {
-  const {
-    conStr,
-    query,
-  } = params;
+  const { connectionString, password } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
 
-  const args = parseConnectionStringToShellArguments(conStr, true);
-  args.push("-e", query);
-  return execCmd("mysql", args, "Run Query", settings.path);
+  return mysqlService.executeQuery({
+    query: params.query,
+    connectionDetails,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
-async function executeSQLFile(params, { settings }) {
-  const {
-    path,
-    conStr,
-  } = params;
+async function listDatabases(params, { settings }) {
+  const { connectionString, password } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
 
-  const query = await fs.readFile(path, { encoding: "utf-8" });
-  return executeQuery({ query, conStr }, { settings });
+  return mysqlService.listDatabases({ connectionDetails }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
-async function dumpDataBaseToFile(params, { settings }) {
-  const { path } = params;
+async function listDatabasesJson(params, { settings }) {
+  const { connectionString, password } = params;
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
 
-  const dumpData = await dumpDataBase(params, { settings });
-  await fs.writeFile(path, dumpData);
-
-  return dumpData;
+  return mysqlService.listDatabasesJson({ connectionDetails }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
-async function dumpDataBase(params, { settings }) {
+async function executeSqlFile(params, { settings }) {
   const {
-    conStr: connectionString,
-    data,
-    dbName,
+    sqlFilePath,
+    connectionString,
+    password,
   } = params;
 
-  const args = parseConnectionStringToShellArguments(connectionString, false);
-  if (!data) {
-    args.push("-d");
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+
+  return mysqlService.executeQueryFile({
+    connectionDetails,
+    sqlFilePath: sqlFilePath.passed,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
+}
+
+async function dumpDatabase(params, { settings }) {
+  const {
+    connectionString,
+    password,
+    includeData,
+    databaseName,
+    dumpPath,
+    overwrite,
+  } = params;
+
+  if (dumpPath.exists && !overwrite) {
+    throw new Error(`A file already exists at ${dumpPath.passed} and "Overwrite existing files" is set to ${overwrite}.`);
   }
-  args.push(dbName);
 
-  return execCmd("mysqldump", args, "Dump Database", settings.path);
+  const dumpDir = await kaholoPluginLibrary.parsers.filePath(path.dirname(dumpPath.absolutePath));
+  if (!dumpDir.exists) {
+    throw new Error(`Dump path includes non-existing directory ${dumpDir.absolutePath}.`);
+  }
+  if (dumpDir.type !== "directory") {
+    throw new Error(`Dump path includes ${dumpDir.absolutePath}, which is not a directory.`);
+  }
+
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
+
+  return mysqlService.dumpDatabase({
+    connectionDetails,
+    includeData,
+    databaseName,
+    dumpPath: dumpPath.absolutePath,
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
 }
 
-async function copyDataBase(params, { settings }) {
+async function restoreDatabase(params, { settings }) {
   const {
-    dbNameCopy: copiedDbName,
-    destConStr: destinationDbConnectionString,
-    conStr: connectionString,
+    connectionString,
+    password,
+    dumpDataPath,
+    databaseName,
+    dropExistingDatabase,
   } = params;
 
-  const resolvedDestDbConStr = destinationDbConnectionString || connectionString || "";
-  const destinationDbArgs = parseConnectionStringToShellArguments(resolvedDestDbConStr, false);
+  const connectionDetails = mysqlService.createConnectionDetails({
+    connectionString,
+    password,
+  });
 
-  // dump sorce database
-  const dumpData = await dumpDataBase(params, { settings });
-  // create new database
-  const createDbArgs = destinationDbArgs.concat(["create", copiedDbName]);
-  await execCmd("mysqladmin", createDbArgs, "Create Database For Copy", settings.path);
-  // copy source database
-  const dumpArgs = destinationDbArgs.concat([copiedDbName, "-e", dumpData]);
+  return mysqlService.restoreDatabase({
+    connectionDetails,
+    databaseName,
+    dumpDataPath: dumpDataPath.passed,
+    options: {
+      dropExistingDatabase,
+    },
+  }, {
+    mysqlExecutablesPath: settings.mysqlExecutablesPath,
+  });
+}
 
-  return execCmd("mysql", dumpArgs, "Copy Source Database From Dump", settings.path);
+async function runMySQLCLICommand(params) {
+  const {
+    environmentVariables,
+    workingDirectory,
+    command,
+  } = params;
+
+  const execOptions = {};
+  if (environmentVariables) {
+    execOptions.env = environmentVariables;
+  }
+  if (workingDirectory) {
+    execOptions.cwd = workingDirectory.absolutePath;
+  }
+
+  const mysqlCliCommand = command.startsWith("mysql") ? command : `mysql ${command}`;
+  return execCmd(mysqlCliCommand, execOptions);
 }
 
 module.exports = kaholoPluginLibrary.bootstrap({
   executeQuery,
-  executeSQLFile,
-  dumpDataBase: dumpDataBaseToFile,
-  copyDataBase,
-});
+  executeSqlFile,
+  dumpDatabase,
+  restoreDatabase,
+  listDatabases,
+  listDatabasesJson,
+  runMySQLCLICommand,
+}, autocomplete);

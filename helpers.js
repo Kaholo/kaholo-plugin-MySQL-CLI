@@ -1,52 +1,121 @@
 const childProcess = require("child_process");
+const fs = require("fs");
+const { access } = require("fs/promises");
+const path = require("path");
+const util = require("util");
 const { promisify } = require("util");
-const { ConnectionString } = require("connection-string");
+const constants = require("./consts.json");
 
-const execFile = promisify(childProcess.execFile);
+const exec = promisify(childProcess.exec);
 
-async function execCmd(command, args, description, path) {
-  const options = {};
-  if (path) {
-    options.cwd = path;
+async function execWithArgs(params) {
+  const {
+    executable,
+    args,
+    onProgressFn,
+  } = params;
+
+  const childProcessInstance = childProcess.execFile(executable, args);
+
+  const outputChunks = [];
+  let errors = 0;
+
+  childProcessInstance.stdout.on("data", (data) => {
+    outputChunks.push({ type: "stdout", data });
+    onProgressFn?.(data);
+  });
+  childProcessInstance.stderr.on("data", (data) => {
+    outputChunks.push({ type: "stderr", data });
+    onProgressFn?.(data);
+  });
+  childProcessInstance.on("error", (error) => {
+    errors += 1;
+    onProgressFn?.(`WHOOPS: ${JSON.stringify(error)}`);
+  });
+
+  await util.promisify(childProcessInstance.on.bind(childProcessInstance))("close");
+
+  const outputObject = outputChunks.reduce((acc, cur) => ({
+    ...acc,
+    [cur.type]: `${acc[cur.type]}${cur.data.toString()}`,
+  }), { stdout: "", stderr: "" });
+
+  if (errors > 0 || outputObject.stderr !== "") {
+    return constants.EMPTY_RETURN_VALUE;
   }
+  // return JSON or nothing
+  return getJsonFromResult(outputObject.stdout);
+}
 
-  let stdout;
-  let stderr;
-  try {
-    ({ stdout, stderr } = await execFile(command, args, options));
-  } catch (error) {
-    throw new Error(`${description} error: ${error}`);
-  }
+async function execWithArgsSimple(command, args) {
+  const { stdout, stderr } = await promisify(childProcess.execFile)(command, args);
 
   if (stderr) {
-    console.info(`${description} stderr: ${stderr}`);
+    return constants.EMPTY_RETURN_VALUE;
   }
+
   return stdout;
 }
 
-function parseConnectionStringToShellArguments(connectionString, isDbRequired) {
-  const args = [];
-  const connectionStringObject = new ConnectionString(connectionString);
-  if (Reflect.has(connectionStringObject, "user")) {
-    args.push("-u", connectionStringObject.user);
-  }
-  if (Reflect.has(connectionStringObject, "password")) {
-    args.push(`-p${connectionStringObject.password}`);
-  }
-  if (Reflect.has(connectionStringObject, "hostname")) {
-    args.push("-h", connectionStringObject.hostname);
-  }
-  if (Reflect.has(connectionStringObject, "port")) {
-    args.push("-P", connectionStringObject.port);
-  }
-  if (isDbRequired && Reflect.has(connectionStringObject, "path")) {
-    args.push("-D", connectionStringObject.path.join("/"));
+async function execCmd(command, execOptions = {}) {
+  const { stdout, stderr } = await exec(command, execOptions);
+
+  if (stderr) {
+    return constants.EMPTY_RETURN_VALUE;
   }
 
-  return args;
+  return stdout;
+}
+
+async function assertPath(filePath) {
+  try {
+    await access(filePath, fs.constants.F_OK);
+  } catch {
+    throw new Error(`Path ${filePath} does not exist on the agent.`);
+  }
+}
+
+async function assertExecutableIsInstalled(executableOrPath) {
+  if (path.basename(executableOrPath) !== executableOrPath) {
+    // executableOrPath contains path to the executable then
+    return assertPath(executableOrPath);
+  }
+
+  try {
+    await exec(`which ${executableOrPath}`);
+  } catch {
+    throw new Error(`Executable ${executableOrPath} was not found.`);
+  }
+
+  return true;
+}
+
+function getJson(value) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return false;
+  }
+}
+
+// for query such as SELECT JSON_ARRAYAGG(JSON_OBJECT('name', name, 'phone', phone)) from Person;
+async function getJsonFromResult(result) {
+  const allIsJson = getJson(result);
+  if (allIsJson) {
+    return allIsJson;
+  }
+  // queries may return the function followed by JSON result as [] in single string
+  const restIsJson = getJson(result.substring(result.indexOf("[")));
+  if (restIsJson) {
+    return restIsJson;
+  }
+  return constants.EMPTY_RETURN_VALUE;
 }
 
 module.exports = {
+  execWithArgs,
+  execWithArgsSimple,
   execCmd,
-  parseConnectionStringToShellArguments,
+  assertExecutableIsInstalled,
+  assertPath,
 };
