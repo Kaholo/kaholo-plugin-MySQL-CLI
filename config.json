@@ -7,12 +7,18 @@
   "main": "app.js",
   "version": "3.0.1",
   "description": "execute MySQL queries and scripts via cli.",
-  "category": "DATABASE",
+  "category": "Database",
   "keywords": [
     "mysql",
+    "mysqldump",
+    "mysqladmin",
     "sql",
     "database",
-    "cli"
+    "cli",
+    "mariadb",
+    "dump",
+    "restore",
+    "query"
   ],
   "auth": {
     "authId": "connectionStringMysqlAccount",
